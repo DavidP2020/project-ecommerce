@@ -1,13 +1,52 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Poppins:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* > * {
+  font-family: "Poppins", sans-serif;
+}
+.card {
+  @apply bg-white text-gray-700
+    w-80 min-h-[10rem] ml-4 mr-4
+    shadow-lg bg-slate-100 shadow-slate-400;
+}
+.cardPayment {
+  @apply bg-white text-gray-700
+  w-96 min-h-[4rem] h-40
+    shadow-lg rounded-md overflow-hidden border-black border-2;
+}
+.screen {
+  @apply w-screen min-h-screen flex flex-col max-w-[500px] mx-auto  justify-center items-center;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.tableLoad {
+  @apply w-screen h-screen flex flex-col max-w-[500px] mx-auto p-10 justify-center items-center;
+}
+.input {
+  @apply h-10 px-3 rounded-md border-[1px] border-gray-300;
+}
+
+.form {
+  @apply w-full bg-gray-100 flex flex-col gap-4 shadow-lg rounded-lg mt-8 p-8;
+}
+
+.flexButton {
+  @apply mt-10 flex flex-col gap-4;
+}
+
+.flexInput {
+  @apply flex flex-col gap-4 mt-5;
+}
+
+.buttonPrimary {
+  @apply h-10 w-full bg-sky-800 text-white text-sm leading-[160%] border border-white rounded-lg;
+}
+.buttonCart {
+  @apply p-2 m-2 text-sm leading-[160%] border border-cyan-900 rounded-full;
+}
+
+.popOver {
+  @apply p-2 border-b-2 border-black hover:scale-110 text-sm;
 }
