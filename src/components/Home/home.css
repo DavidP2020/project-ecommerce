@@ -51,3 +51,39 @@
     right: 1rem;
   }
 }
+.container {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  overflow: auto;
+}
+
+.flex-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+.loading {
+  text-align: center;
+  position: relative;
+  top: -100%;
+  justify-content: center;
+}
+
+.slider {
+  margin: 0 auto;
+}
+
+.slick-slide > div {
+  margin: 0 10px;
+}
+.slick-list {
+  margin: 0 -10px;
+}
+.carded {
+  border: 1px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}

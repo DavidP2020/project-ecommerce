@@ -13,7 +13,7 @@ import { numberWithCommas } from "../../utils/comma";
 import "./Detail.css";
 export default function DetailProduct() {
   return (
-    <div className=" pt-4 text-2xl font-semibold flex-1 h-screen w-screen">
+    <div className=" pt-4 text-2xl font-semibold flex-1 h-screen">
       <section className="section-container">{Post()}</section>
     </div>
   );
@@ -144,7 +144,7 @@ function Post() {
           </Box>
         </div>
       ) : (
-        <div className="py-4 md:px-20 px-2">
+        <div className="py-4 md:px-20 px-2 ">
           <div className="font-normal text-xs leading-10">
             <Link to="/" className="hover:underline">
               Home
@@ -280,7 +280,7 @@ function Post() {
                   <span className="text-2xl text-gray-700 leading-6 p-2 font-bold">
                     Product Description
                   </span>
-                  <p className="text-lg text-gray-700 p-2 font-normal whitespace-pre-line">
+                  <p className="text-lg text-gray-700 p-2 font-normal ">
                     {product.description}
                   </p>
                 </div>
@@ -309,13 +309,7 @@ function Post() {
               Rp. {numberWithCommas(price * qty)}
             </div>
           </div>
-          <button
-            className="border-solid border-2 border-black text-sm font-medium px-4 py-2 rounded-md mx-2"
-            type="button"
-            //   onClick={() => addToCart(product)}
-          >
-            Add to Wish
-          </button>
+          <i className="fa-sharp fa-regular fa-heart"></i>
           {price ? (
             <button
               className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-md mx-4"
