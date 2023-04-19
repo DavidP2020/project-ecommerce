@@ -56,11 +56,11 @@ function Post() {
   return (
     <>
       {loading ? (
-        <div className="screen">
+        <div className="tableLoad">
           <Box sx={{ display: "flex" }}>
-            <div className="loading">
-              <CircularProgress />{" "}
-              <div className="font-thin">Loading Category</div>
+            <div className="loading font-normal">
+              <CircularProgress />
+              <div>Loading Category</div>
             </div>
           </Box>
         </div>

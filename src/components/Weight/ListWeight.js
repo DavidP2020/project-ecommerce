@@ -256,7 +256,7 @@ const ListWeight = () => {
                             <Stack spacing={1} direction="row">
                               <button
                                 variant="contained"
-                                className="bg-green-600 pl-6 pr-6 pt-2 pb-2 text-white rounded-sm"
+                                className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                 onClick={() => handleOpenEdit(userData)}
                               >
                                 EDIT
@@ -305,7 +305,7 @@ const ListWeight = () => {
                               </Modal>
                               <button
                                 variant="contained"
-                                className="bg-red-600 pl-6 pr-6 pt-2 pb-2 text-white rounded-sm"
+                                className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                 onClick={() => handleOpenDelete(userData)}
                               >
                                 DELETE

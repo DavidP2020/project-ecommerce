@@ -6,7 +6,6 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -48,25 +47,15 @@ export default function Cart() {
     document.title = "Cart";
   }, []);
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 800,
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
   return (
-    <div className="p-7 text-2xl font-semibold flex-1 h-screen overflow-scroll">
+    <div className="p-7 text-2xl font-semibold flex-1 w-screen overflow-scroll">
       <h2 className="font-bold text-2xl m-6">Cart</h2>
       {loading ? (
-        <div className="screen bg-blue">
+        <div className="tableLoad">
           <Box sx={{ display: "flex" }}>
-            <div className="loading">
+            <div className="loading font-normal">
               <CircularProgress />
-              <div className="font-thin">Loading Cart</div>
+              <div>Loading Cart</div>
             </div>
           </Box>
         </div>

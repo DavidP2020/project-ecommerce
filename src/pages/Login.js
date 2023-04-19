@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Bg from "../assets/bg.jpg";
+import Bg from "../assets/login.svg";
 export default function Login() {
   const [error, setError] = useState();
   const [email, setEmail] = useState("");
@@ -40,10 +40,10 @@ export default function Login() {
     document.title = "Login";
   }, []);
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 h-screen w-full">
-      <div className="bg-slate-800 flex flex-col justify-center">
+    <section className="flex flex-col md:flex-row h-screen items-center w-full">
+      <div className="bg-white w-full lg:w-1/2 xl:w-1/3 h-screen flex items-center justify-center">
         <form
-          className="max-w-[400px] w-full mx-auto rounded-lg bg-white p-10 px-8 h-3/4 shadow-black shadow-lg overflow-x-scroll"
+          className="w-full mx-auto rounded-lg bg-white p-10 py-8 h-screen overflow-x-scroll"
           onSubmit={handleSubmit}
         >
           <h1 className="text-3xl text-center p-4">Sign In</h1>
@@ -94,10 +94,11 @@ export default function Login() {
           </div>
         </form>
       </div>
-
-      <div className="hidden sm:block">
-        <img className="w-full h-full object-cover" src={Bg} alt="" />
+      <div className="hidden md:block px-8 md:w-1/2 xl:w-2/3 h-screen ">
+        <div className="flex flex-col justify-center">
+          <img className="object-cover" src={Bg} alt="" />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

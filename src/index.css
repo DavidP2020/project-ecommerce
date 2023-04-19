@@ -5,12 +5,16 @@
 @tailwind utilities;
 
 * > * {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Montserrat", sans-serif;
+}
+body {
+  @apply bg-bg;
 }
 .card {
   @apply bg-white text-gray-700
-    w-80 min-h-[10rem] ml-4 mr-4
-    shadow-lg bg-slate-100 shadow-slate-400;
+    w-80 min-h-[10rem] ml-4 mr-4 justify-center items-center
+    shadow-lg shadow-slate-400;
 }
 .cardPayment {
   @apply bg-white text-gray-700
@@ -49,4 +53,16 @@
 
 .popOver {
   @apply p-2 border-b-2 border-black hover:scale-110 text-sm;
+}
+.navbar-links {
+  @apply flex py-2 px-10 
+    font-extrabold
+    hover:underline
+    cursor-pointer
+    transition-shadow;
+}
+.nav-links {
+  @apply py-2 px-6  
+    cursor-pointer
+    transition-shadow;
 }

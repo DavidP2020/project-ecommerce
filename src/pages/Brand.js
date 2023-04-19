@@ -7,7 +7,7 @@ export default function Brand() {
   }, []);
   return (
     <>
-      <div className="p-7 pt-4 text-2xl font-semibold flex-1 h-screen w-screen overflow-y-scroll">
+      <div className="p-7 pt-4 text-2xl font-semibold">
         <ListBrand />
       </div>
     </>

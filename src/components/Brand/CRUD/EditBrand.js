@@ -1,4 +1,10 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 import swal from "sweetalert";
@@ -9,7 +15,7 @@ export default function EditBrand({ data, handleClose, fetchItem, ...props }) {
     status: data.status,
   });
   const [error, setError] = useState();
-
+  const [loading, setLoading] = useState(false);
   const setStatus = [
     {
       value: "0",
@@ -30,6 +36,7 @@ export default function EditBrand({ data, handleClose, fetchItem, ...props }) {
     const formData = new FormData();
     formData.append("name", state.name);
     formData.append("status", state.status);
+    setLoading(true);
 
     try {
       axios.post(`/api/brand/${data.id}`, formData).then((res) => {
@@ -46,8 +53,10 @@ export default function EditBrand({ data, handleClose, fetchItem, ...props }) {
           handleClose();
         } else if (res.data.status === 422) {
           setError(res.data.error);
+          setLoading(false);
         } else if (res.data.status === 404) {
           setError(res.data.message);
+          setLoading(false);
         }
       });
     } catch (err) {
@@ -104,12 +113,20 @@ export default function EditBrand({ data, handleClose, fetchItem, ...props }) {
         </div>
         <br />
         <div style={{ textAlign: "right" }}>
-          <Button
-            style={{ background: "green" }}
-            variant="contained"
-            type="submit"
-            onClick={handleSubmit}
-          >
+          <Button variant="contained" disabled={loading} onClick={handleSubmit}>
+            {loading && (
+              <CircularProgress
+                color="inherit"
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             Submit
           </Button>
         </div>

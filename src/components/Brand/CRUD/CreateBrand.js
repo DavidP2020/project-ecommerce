@@ -1,4 +1,10 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 import swal from "sweetalert";
@@ -9,7 +15,7 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
     status: "1",
   });
   const [error, setError] = useState();
-
+  const [loading, setLoading] = useState(false);
   const setStatus = [
     {
       value: "0",
@@ -31,10 +37,10 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
 
     const formData = new FormData();
     formData.append("name", state.name);
-    formData.append("status", state.description);
+    formData.append("status", state.status);
+    setLoading(true);
     try {
       axios.post("/api/brand", formData).then((res) => {
-        console.log(res.data);
         if (res.data.status === 200) {
           swal({
             title: "Success!",
@@ -48,6 +54,7 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
           handleClose();
         } else if (res.data.status === 403) {
           setError(res.data.validation_errors);
+          setLoading(false);
         }
       });
     } catch (err) {
@@ -105,12 +112,20 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
         </div>
         <br />
         <div style={{ textAlign: "right" }}>
-          <Button
-            style={{ background: "green" }}
-            variant="contained"
-            type="submit"
-            onClick={handleSubmit}
-          >
+          <Button variant="contained" disabled={loading} onClick={handleSubmit}>
+            {loading && (
+              <CircularProgress
+                color="inherit"
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             Submit
           </Button>
         </div>

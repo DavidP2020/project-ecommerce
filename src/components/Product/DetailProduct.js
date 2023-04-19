@@ -10,11 +10,11 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import { numberWithCommas } from "../../utils/comma";
-
+import "./Detail.css";
 export default function DetailProduct() {
   return (
-    <div className="p-7 pt-4 text-2xl font-semibold flex-1 h-screen w-screen overflow-scroll">
-      <section className="section-container md:py-20">{Post()}</section>
+    <div className=" pt-4 text-2xl font-semibold flex-1 h-screen w-screen">
+      <section className="section-container">{Post()}</section>
     </div>
   );
 }
@@ -24,6 +24,7 @@ function Post() {
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
   const [price, setPrice] = useState(0);
+  const [color, setColor] = useState("-");
   const [total, setTotal] = useState(0);
   const [itemQty, setitemQty] = useState(0);
   const [detail, setDetail] = useState([]);
@@ -34,9 +35,9 @@ function Post() {
 
   const handleAlignment = async (event, newAlignment) => {
     setAlignment(newAlignment);
-    console.log(newAlignment);
     await axios.get(`/api/detailProduct/${newAlignment}`).then((res) => {
       setPrice(res.data.getDetail[0].price);
+      setColor(res.data.getDetail[0].colorName);
       setitemQty(res.data.getDetail[0].qty);
       setcartProduct(newAlignment);
     });
@@ -61,7 +62,6 @@ function Post() {
         if (res.data.status === 200) {
           setProduct(res.data.product[0]);
           setDetail(res.data.detailProduct);
-          console.log("asd", res.data.detailProduct);
           setTotal(res.data.total);
           setLoading(false);
         } else if (res.data.status === 404) {
@@ -135,22 +135,29 @@ function Post() {
   return (
     <>
       {loading ? (
-        <div className="screen">
-          <Box sx={{ display: "flex" }} component={"div"}>
-            <div className="loading">
+        <div className="tableLoad">
+          <Box sx={{ display: "flex" }}>
+            <div className="loading font-normal">
               <CircularProgress />
-              <div className="font-thin">Loading Product Detail</div>
+              <div>Loading Detail Product</div>
             </div>
           </Box>
         </div>
       ) : (
-        <>
-          <h1 className="title-text text-black">
-            Category / {id.slug} / {id.product}
-          </h1>
-          <div className="py-3">
-            <div className="flex flex-wrap mb-10 ">
-              <div className="left-side w-2/5">
+        <div className="py-4 md:px-20 px-2">
+          <div className="font-normal text-xs leading-10">
+            <Link to="/" className="hover:underline">
+              Home
+            </Link>
+            {" > "}{" "}
+            <Link to={`/category/${id.slug}`} className="hover:underline">
+              <span className="capitalize">{id.slug}</span>
+            </Link>
+            {" > "} <span className="capitalize">{id.product}</span>
+          </div>
+          <div className="py-2">
+            <div className="flex flex-col flex-wrap mb-10 lg:flex-row">
+              <div className="left-side w-full lg:w-2/5">
                 <div className="flex">
                   <div className="flex-row">
                     <img
@@ -164,15 +171,15 @@ function Post() {
               </div>
 
               {/* Right Side */}
-              <div className="right-side w-3/5 p-6">
+              <div className="right-side w-full lg:w-3/5 p-6">
                 {/* Name */}
                 <div className="text-right">
                   {total < 1 ? (
-                    <button className="text-sm bg-red-600 p-2 pl-4 pr-4 rounded-md font-normal text-white">
+                    <button className="text-sm bg-red-600 px-8 py-4 rounded-md font-normal text-white">
                       Out Of Stock
                     </button>
                   ) : (
-                    <button className="text-sm bg-green-700 p-2 pl-4 pr-4 rounded-md font-normal text-white">
+                    <button className="text-sm bg-green-700 px-8 py-4 rounded-md font-normal text-white">
                       In Stock
                     </button>
                   )}
@@ -189,6 +196,7 @@ function Post() {
                       exclusive
                       onChange={handleAlignment}
                       aria-label="text alignment"
+                      className="border-solid border-2 border-black m-2"
                     >
                       <ToggleButton value={data._id} aria-label="left aligned">
                         <div
@@ -196,54 +204,34 @@ function Post() {
                             background: `${data.color}`,
                             width: "40px",
                             height: "40px",
-                            margin: "10px",
                           }}
                         ></div>
-                        <div>{data.colorName}</div>
+                        <div className="font-bold ml-2">{data.colorName}</div>
                       </ToggleButton>
                     </ToggleButtonGroup>
                   );
                 })}
 
                 {/* Price List */}
-
                 <div className="text-lg text-gray-700 leading-6 p-2">
                   Price : <span>Rp. {numberWithCommas(price)}</span>
                 </div>
                 <div className="flex items-center gap-2 p-2">
                   <span className="badge text-sm">Quantity : {itemQty}</span>
                 </div>
-                {/* Description */}
-                <div>
-                  <p className="text-sm text-gray-700 leading-6 p-2 font-bold">
-                    Brand :
-                    <span className="font-normal"> {[product.brandName]}</span>
-                    <p>
-                      Category :
-                      <span className="font-normal">
-                        {" "}
-                        {[product.categoryName]}
-                      </span>
-                    </p>
-                  </p>
-                </div>
-                {/* Description */}
-                <div>
-                  <span className="text-sm text-gray-700 leading-6 p-2 font-bold">
-                    Description
-                  </span>
-                  <p className="text-sm text-gray-700 pl-2 font-normal">
-                    {product.description}
-                  </p>
-                </div>
 
                 {/* Amount */}
-                <div className="flex leading-none p-2 pt-6">
-                  <div className="w-1/5 text-lg">Amount</div>
-                  <div className="w-4/5 flex space-x-6 justify-center">
-                    <div className="increment-input flex space-x-3 bg-gray-100 rounded-full overflow-hidden">
+                <div className="flex leading-none p-2 pt-2 justify-center items-center">
+                  <div className="md:w-1/5 text-lg">Amount</div>
+                  <div className="w-4/5 flex space-x-6 justify-center items-center text-center">
+                    <div className="increment-input flex space-x-3 overflow-hidden">
                       <span>
-                        <button onClick={handleDecrement}>-</button>
+                        <button
+                          className="bg-white m-2 p-1 px-3 font-normal rounded-md border-solid border-2 border-black"
+                          onClick={handleDecrement}
+                        >
+                          -
+                        </button>
                         <input
                           type="text"
                           id="qty"
@@ -251,46 +239,102 @@ function Post() {
                           value={qty}
                           readOnly
                           placeholder="1"
-                          className="border-solid w-1/2 focus:outline-none active:outline-none text-center text-md"
+                          className="w-1/5 focus:outline-none active:outline-none text-center text-md font-normal"
                         />
-                        <button onClick={handleIncrement}>+</button>
+                        <button
+                          className="bg-white m-2 p-1 px-3 font-normal rounded-md border-solid border-2 border-black"
+                          onClick={handleIncrement}
+                        >
+                          +
+                        </button>
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="fixed-bottom text-right font-bold pt-4 pb-8 ">
-              <div className="pt-10">
-                <button
-                  className="buttonCart"
-                  type="button"
-                  //   onClick={() => addToCart(product)}
-                >
-                  Add to Wish
-                </button>
-                {price ? (
-                  <button
-                    className="buttonCart bg-blue-600 text-white"
-                    type="button"
-                    onClick={handleSubmit}
-                  >
-                    Add to Cart
-                  </button>
-                ) : (
-                  <button
-                    className="buttonCart bg-gray-300"
-                    type="button"
-                    disabled
-                  >
-                    Add to Cart
-                  </button>
-                )}
+              {/* Description */}
+              <div className="md:px-0 px-4">
+                <div className="py-2">
+                  <span className="text-2xl text-gray-700 leading-6 p-2 font-bold">
+                    Product Specification
+                  </span>
+                  <p className="text-sm text-gray-700 leading-6 p-2 font-bold">
+                    Brand :{" "}
+                    <span className="font-normal"> {[product.brandName]}</span>
+                    <p className="mt-1">
+                      Category :{" "}
+                      <span className="font-normal">
+                        {[product.categoryName]}
+                      </span>
+                    </p>
+                    <p className="mt-1">
+                      Color : <span className="font-normal">{[color]}</span>
+                    </p>
+                    <p className="mt-1">
+                      Weight :{" "}
+                      <span className="font-normal">{[product.weight]} Kg</span>
+                    </p>
+                  </p>
+                </div>
+                <div className="py-4">
+                  <span className="text-2xl text-gray-700 leading-6 p-2 font-bold">
+                    Product Description
+                  </span>
+                  <p className="text-lg text-gray-700 p-2 font-normal whitespace-pre-line">
+                    {product.description}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </>
+          <div className="h-10"></div>
+        </div>
       )}
+      <div className="scrollups bg-white py-4 flex justify-end lg:justify-between items-center md:px-16">
+        <div className="md:flex lg:flex-row flex-col justify-center items-center hidden ">
+          <img
+            src={`http://localhost:8000/${product.photo}`}
+            alt=""
+            width={150}
+            height={150}
+            className="mx-4 object-cover px-4"
+          />
+          <div className="text-lg font-medium">{product.name}</div>
+        </div>
+
+        <div className="flex m-2 mt-5 justify-between items-center">
+          <div className="flex flex-col">
+            <div className="font-semibold text-xs w-40">Total Price :</div>
+            <div className="font-bold text-red-500 text-lg">
+              Rp. {numberWithCommas(price * qty)}
+            </div>
+          </div>
+          <button
+            className="border-solid border-2 border-black text-sm font-medium px-4 py-2 rounded-md mx-2"
+            type="button"
+            //   onClick={() => addToCart(product)}
+          >
+            Add to Wish
+          </button>
+          {price ? (
+            <button
+              className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-md mx-4"
+              type="button"
+              onClick={handleSubmit}
+            >
+              Add to Cart
+            </button>
+          ) : (
+            <button
+              className="bg-gray-500 text-white text-sm font-medium px-14 md:px-4  py-2 rounded-md mx-4"
+              type="button"
+              disabled
+            >
+              Add to Cart
+            </button>
+          )}
+        </div>
+      </div>
     </>
   );
 }

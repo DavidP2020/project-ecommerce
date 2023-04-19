@@ -6,19 +6,25 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import swal from "sweetalert";
 
-export default function CreateColor({ handleClose, fetchItem, ...props }) {
+export default function CreateDetailProduct({
+  handleClose,
+  fetchItem,
+  data,
+  ...props
+}) {
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
-    name: "",
-    color: "",
+    color_id: "",
+    qty: "",
+    original_price: "",
+    price: "",
     status: "1",
   });
-  const [error, setError] = useState();
-  const [picture, setPicture] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const [color, setColor] = useState();
   const setStatus = [
     {
       value: "0",
@@ -34,22 +40,20 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
   };
-  const handleImage = (e) => {
-    setPicture({ image: e.target.files[0] });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const formData = new FormData();
-    formData.append("photo", picture.image);
-    formData.append("name", state.name);
-    formData.append("color", state.color);
+    formData.append("color_id", state.color_id);
+    formData.append("qty", state.qty);
+    formData.append("original_price", state.original_price);
+    formData.append("price", state.price);
     formData.append("status", state.status);
     setLoading(true);
+
     try {
       axios
-        .post("/api/color", formData, {
+        .post(`/api/detail-products/${data}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -64,8 +68,16 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
               timer: 1500,
             });
             setError("");
-            fetchItem();
             handleClose();
+            fetchItem();
+            setState({
+              color_id: "",
+              weight: "",
+              qty: "",
+              original_price: "",
+              price: "",
+              status: "1",
+            });
           } else if (res.data.status === 403) {
             setError(res.data.validation_errors);
             setLoading(false);
@@ -75,6 +87,18 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
       alert(err.message);
     }
   };
+
+  const fetchColor = async () => {
+    axios.get("/api/all-color").then((resp) => {
+      if (resp.data.status === 200) {
+        setColor(resp.data.color);
+      }
+    });
+  };
+  useEffect(() => {
+    fetchColor();
+  }, []);
+
   return (
     <div>
       <Box
@@ -89,6 +113,7 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
             <ul>
               <li>{error.name}</li>
+              <li>{error.slug}</li>
               <li>{error.photo}</li>
             </ul>
           </div>
@@ -98,35 +123,56 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
         <div className="h-96 overflow-x-scroll">
           <div className="flexInput">
             <TextField
-              helperText="Please enter your Color Name"
-              id="name"
-              name="name"
-              label="Color Name"
-              value={state.name}
+              select
+              label="Color"
+              helperText="Please select your Color"
+              name="color_id"
+              variant="outlined"
+              value={state.color_id}
+              onChange={handleInputChange}
+            >
+              {color &&
+                color.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
+                  </MenuItem>
+                ))}
+            </TextField>
+          </div>
+          <div className="flexInput">
+            <TextField
+              helperText="Please enter your Quantity"
+              id="qty"
+              name="qty"
+              label="Quantity"
+              value={state.qty}
               type="text"
               onChange={handleInputChange}
             />
           </div>
           <div className="flexInput">
             <TextField
-              helperText="Please enter your color"
-              id="color"
-              name="color"
-              label="Color"
-              value={state.color}
-              type="color"
+              helperText="Please enter your Price"
+              id="price"
+              name="price"
+              label="Price"
+              value={state.price}
+              type="text"
               onChange={handleInputChange}
             />
           </div>
           <div className="flexInput">
             <TextField
-              id="photo"
-              name="photo"
-              helperText="Please input your image"
-              type="file"
-              onChange={handleImage}
+              helperText="Please enter your Original Price"
+              id="original_price"
+              name="original_price"
+              label="Original Price"
+              value={state.original_price}
+              type="text"
+              onChange={handleInputChange}
             />
           </div>
+
           <div className="flexInput">
             <TextField
               select

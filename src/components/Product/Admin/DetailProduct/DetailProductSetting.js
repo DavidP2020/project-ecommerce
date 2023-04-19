@@ -17,16 +17,18 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import "../../App.css";
+import "../../../../App.css";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import CreateBrand from "./CRUD/CreateBrand";
-import EditBrand from "./CRUD/EditBrand";
-import DeleteBrand from "./CRUD/DeleteBrand";
-import { Link } from "react-router-dom";
+import DeleteProduct from "../../CRUD/DeleteProduct";
+import EditProduct from "../../CRUD/EditProduct";
+import { Link, useParams } from "react-router-dom";
+import { numberWithCommas } from "../../../../utils/comma";
+import CreateDetailProduct from "./CreateDetailProduct";
+import EditDetailProduct from "./EditDetailProduct";
 
-const ListBrand = () => {
+const DetailProductSetting = () => {
   const columns = [
     {
       id: "no",
@@ -35,14 +37,33 @@ const ListBrand = () => {
       align: "center",
     },
     {
-      id: "id",
-      label: "ID",
-      minWidth: 170,
+      id: "name",
+      label: "Product Name",
+      minWidth: 200,
       align: "center",
     },
     {
-      id: "name",
-      label: "Brand Name",
+      id: "color",
+      label: "Color Name",
+      minWidth: 200,
+      align: "center",
+    },
+
+    {
+      id: "original_price",
+      label: "Original Price",
+      minWidth: 200,
+      align: "center",
+    },
+    {
+      id: "price",
+      label: "Price",
+      minWidth: 200,
+      align: "center",
+    },
+    {
+      id: "qty",
+      label: "Quantity",
       minWidth: 200,
       align: "center",
     },
@@ -59,6 +80,7 @@ const ListBrand = () => {
       align: "center",
     },
   ];
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -71,9 +93,11 @@ const ListBrand = () => {
     p: 4,
   };
 
+  const paramsId = useParams();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [listBrand, setlistBrand] = useState([]);
+  const [color, setColor] = useState();
+  const [listDetail, setlistDetail] = useState([]);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -85,7 +109,6 @@ const ListBrand = () => {
   const handleOpenCreate = () => {
     setOpen(true);
   };
-  //function untuk tutup  pop up
   const handleCloseCreate = () => setOpen(false);
 
   const handleOpenEdit = (id) => {
@@ -98,7 +121,6 @@ const ListBrand = () => {
     setId(id);
     setOpenDelete(true);
   };
-
   const handleCloseDelete = () => setOpenDelete(false);
 
   const handleChangePage = (event, newPage) => {
@@ -110,23 +132,24 @@ const ListBrand = () => {
     setPage(0);
   };
 
-  const fetchItem = () => {
-    try {
-      axios.get("/api/brand").then((resp) => {
-        if (resp.data.status === 200) {
-          setlistBrand(resp.data.brand);
-          console.log(resp.data.brand);
-        }
-        setLoading(false);
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  const fetchItem = async () => {
+    await axios.get(`/api/detail-products/${paramsId.id}`).then((resp) => {
+      if (resp.data.status === 200) {
+        setlistDetail(resp.data.getDetail);
+      }
+      setLoading(false);
+    });
+
+    axios.get("/api/all-color").then((resp) => {
+      if (resp.data.status === 200) {
+        setColor(resp.data.color);
+      }
+    });
   };
   const filterData = (e) => {
     if (e.target.value != "") {
       setValue(e.target.value);
-      const filteredRows = listBrand.filter((rowsPerPage) => {
+      const filteredRows = listDetail.filter((rowsPerPage) => {
         return rowsPerPage.name
           .toLowerCase()
           .includes(e.target.value.toLowerCase());
@@ -134,7 +157,7 @@ const ListBrand = () => {
       setSearched(filteredRows);
     } else {
       setValue(e.target.value);
-      setlistBrand([...listBrand]);
+      setlistDetail([...listDetail]);
     }
   };
   useEffect(() => {
@@ -142,20 +165,24 @@ const ListBrand = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-4">
       <div className="font-normal text-xs leading-10">
         <Link to="/" className="hover:underline">
           Home
         </Link>
-        {" > "} <span className="capitalize"> Brand</span>
+        {" > "}
+        <Link to={`/product`} className="hover:underline">
+          <span className="capitalize">Product</span>
+        </Link>
+        {" > "} <span className="capitalize">Detail Product</span>
       </div>
-      <h2 className="font-bold text-2xl m-6">List Brand</h2>
+      <h2 className="font-bold text-2xl m-6">List Detail Product</h2>
       <div className="text-right mb-10 mr-10">
         <button
           className="bg-black text-white text-lg font-medium px-4 py-2 rounded-md"
           onClick={() => handleOpenCreate()}
         >
-          Create Brand
+          Create Detail Product
         </button>
       </div>
       {isLoading ? (
@@ -163,7 +190,7 @@ const ListBrand = () => {
           <Box sx={{ display: "flex" }}>
             <div className="loading font-normal">
               <CircularProgress />
-              <div>Loading Brand</div>
+              <div>Loading Detail Product</div>
             </div>
           </Box>
         </div>
@@ -201,18 +228,31 @@ const ListBrand = () => {
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
-                      .map((userData, i) => (
+                      .map((detailData, i) => (
                         <TableRow
                           hover
                           role="checkbox"
                           tabIndex={-1}
-                          key={userData.id}
+                          key={detailData.id}
                         >
                           <TableCell align="center">{i + 1}</TableCell>
-                          <TableCell align="center">{userData.id}</TableCell>
-                          <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
-                            {userData.status === 1 ? (
+                            {detailData.name}
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.colorName}
+                          </TableCell>
+                          <TableCell align="center">
+                            Rp. {numberWithCommas(detailData.original_price)}
+                          </TableCell>
+                          <TableCell align="center">
+                            Rp. {numberWithCommas(detailData.price)}
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.qty} Pcs
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.status === 1 ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Active
@@ -245,17 +285,9 @@ const ListBrand = () => {
                                   <button
                                     variant="contained"
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenEdit(userData)}
+                                    onClick={() => handleOpenEdit(detailData)}
                                   >
                                     EDIT
-                                  </button>
-
-                                  <button
-                                    variant="contained"
-                                    className="bg-red-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenDelete(userData)}
-                                  >
-                                    DELETE
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -263,24 +295,36 @@ const ListBrand = () => {
                           </TableCell>
                         </TableRow>
                       ))
-                  : listBrand &&
-                    listBrand
+                  : listDetail
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
-                      .map((userData, i) => (
+                      .map((detailData, i) => (
                         <TableRow
                           hover
                           role="checkbox"
                           tabIndex={-1}
-                          key={userData.id}
+                          key={detailData.id}
                         >
                           <TableCell align="center">{i + 1}</TableCell>
-                          <TableCell align="center">{userData.id}</TableCell>
-                          <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
-                            {userData.status === 1 ? (
+                            {detailData.name}
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.colorName}
+                          </TableCell>
+                          <TableCell align="center">
+                            Rp. {numberWithCommas(detailData.original_price)}
+                          </TableCell>
+                          <TableCell align="center">
+                            Rp. {numberWithCommas(detailData.price)}
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.qty} Pcs
+                          </TableCell>
+                          <TableCell align="center">
+                            {detailData.status === 1 ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Active
@@ -313,17 +357,9 @@ const ListBrand = () => {
                                   <button
                                     variant="contained"
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenEdit(userData)}
+                                    onClick={() => handleOpenEdit(detailData)}
                                   >
                                     EDIT
-                                  </button>
-
-                                  <button
-                                    variant="contained"
-                                    className="bg-red-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenDelete(userData)}
-                                  >
-                                    DELETE
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -337,7 +373,7 @@ const ListBrand = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={listBrand.length}
+            count={listDetail.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -357,7 +393,7 @@ const ListBrand = () => {
           <Box sx={style} style={{ background: "white" }} component={"div"}>
             <Toolbar style={{ marginLeft: "-1rem" }}>
               <Typography component="div" sx={{ flexGrow: 2 }}>
-                <b className="text-xl">Create Brand</b>
+                <b className="text-xl">Create Detail Product</b>
               </Typography>
               <i
                 className="icon fa fa-times"
@@ -371,8 +407,8 @@ const ListBrand = () => {
               component={"div"}
             >
               {/* Isi Pop Up */}
-              <CreateBrand
-                data={id}
+              <CreateDetailProduct
+                data={paramsId.id}
                 handleClose={handleCloseCreate}
                 fetchItem={fetchItem}
               />
@@ -380,6 +416,7 @@ const ListBrand = () => {
           </Box>
         </Fade>
       </Modal>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -392,7 +429,7 @@ const ListBrand = () => {
           <Box sx={style} style={{ background: "white" }} component={"div"}>
             <Toolbar style={{ marginLeft: "-1rem" }}>
               <Typography component="div" sx={{ flexGrow: 2 }}>
-                <b className="text-xl">Edit Brand</b>
+                <b className="text-xl">Edit Detail Product</b>
               </Typography>
               <i
                 className="icon fa fa-times"
@@ -405,43 +442,9 @@ const ListBrand = () => {
               sx={{ mt: 2 }}
               component={"div"}
             >
-              <EditBrand
+              <EditDetailProduct
                 data={id}
                 handleClose={handleCloseEdit}
-                fetchItem={fetchItem}
-              />
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={openDelete}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        className="overflow-scroll h-11/12"
-      >
-        <Fade in={openDelete}>
-          <Box sx={style} style={{ background: "white" }} component={"div"}>
-            <Toolbar style={{ marginLeft: "-1rem" }}>
-              <Typography component="div" sx={{ flexGrow: 2 }}>
-                <b className="text-xl">Delete Brand</b>
-              </Typography>
-              <i
-                className="icon fa fa-times"
-                aria-hidden="true"
-                onClick={handleCloseDelete}
-              ></i>
-            </Toolbar>
-            <Typography
-              id="transition-modal-description"
-              sx={{ mt: 2 }}
-              component={"div"}
-            >
-              <DeleteBrand
-                data={id}
-                handleClose={handleCloseDelete}
                 fetchItem={fetchItem}
               />
             </Typography>
@@ -452,4 +455,4 @@ const ListBrand = () => {
   );
 };
 
-export default ListBrand;
+export default DetailProductSetting;

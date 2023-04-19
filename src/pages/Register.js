@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Bg from "../assets/bg.jpg";
+import Bg from "../assets/register.svg";
 export default function Register() {
   const [error, setError] = useState();
   const [errors, setErrors] = useState();
@@ -47,14 +47,16 @@ export default function Register() {
     document.title = "Register";
   }, []);
   return (
-    <section className="flex flex-col md:flex-row h-screen items-center w-full ">
-      <div className="hidden lg:block w-full md:w-1/2 xl:w-2/3 h-screen">
-        <img className="w-full h-full object-cover" src={Bg} alt="" />
+    <section className="flex flex-col md:flex-row h-screen items-center w-full">
+      <div className="hidden md:block px-8 md:w-1/2 xl:w-2/3 h-screen ">
+        <div className="flex flex-col justify-center">
+          <img className="object-cover" src={Bg} alt="" />
+        </div>
       </div>
 
       <div className="bg-white w-full lg:w-1/2 xl:w-1/3 h-screen flex items-center justify-center ">
         <form
-          className="w-full mx-auto rounded-lg bg-white p-10 px-8 h-screen shadow-black shadow-lg overflow-x-scroll"
+          className="w-full mx-auto rounded-lg bg-white p-10 px-8 h-screen  overflow-x-scroll"
           onSubmit={handleSubmit}
         >
           <h1 className="text-3xl text-center p-4 ">Sign Up</h1>
@@ -122,7 +124,7 @@ export default function Register() {
               Sign Up
             </button>
             <div className="text-center text-xs">
-              Already Have An Account ? <Link to="/">Sign In</Link>
+              Already Have An Account ? <Link to="/login">Sign In</Link>
             </div>
           </div>
         </form>

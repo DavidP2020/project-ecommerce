@@ -1,0 +1,8 @@
+.scrollups {
+  position: fixed;
+  bottom: 0%;
+  width: 100%;
+  border-radius: 0.5rem;
+  z-index: var(--z-tooltip);
+  transition: 0.4s;
+}

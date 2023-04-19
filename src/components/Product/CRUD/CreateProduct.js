@@ -2,6 +2,9 @@ import {
   AppBar,
   Box,
   Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
   MenuItem,
   Tab,
   Tabs,
@@ -16,6 +19,9 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
   const [category, setCategory] = useState([]);
   const [brand, setBrand] = useState([]);
   const [picture, setPicture] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [trending, setTrending] = useState(0);
+  const [value, setValue] = useState(0);
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
@@ -25,16 +31,22 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
     setPicture({ image: e.target.files[0] });
   };
 
-  const [value, setValue] = useState(0);
   const handleTabs = (e, val) => {
     setValue(val);
   };
-
+  const handleChecked = (e) => {
+    if (e.target.checked === true) {
+      setTrending(1);
+    } else {
+      setTrending(0);
+    }
+  };
   const [state, setState] = useState({
     category_id: "",
     name: "",
     slug: "",
     description: "",
+    weight: "",
     brand_id: "",
     status: "1",
   });
@@ -55,12 +67,14 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
     const formData = new FormData();
     formData.append("photo", picture.image);
     formData.append("category_id", state.category_id);
+    formData.append("weight", state.weight);
     formData.append("brand_id", state.brand_id);
     formData.append("name", state.name);
     formData.append("slug", state.slug);
+    formData.append("trending", trending);
     formData.append("description", state.description);
     formData.append("status", state.status);
-
+    setLoading(false);
     try {
       axios
         .post("/api/products", formData, {
@@ -69,7 +83,6 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
           },
         })
         .then((res) => {
-          console.log(res.data);
           if (res.data.status === 200) {
             swal({
               title: "Success!",
@@ -83,6 +96,7 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
             handleClose();
           } else if (res.data.status === 403) {
             setError(res.data.validation_errors);
+            setLoading(false);
           }
         });
     } catch (err) {
@@ -218,6 +232,16 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
                 onChange={handleInputChange}
               />
             </div>
+
+            <div className="flexInput">
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox checked={trending} onChange={handleChecked} />
+                }
+                label="Trending"
+              />
+            </div>
             <div className="flexInput">
               <TextField
                 id="photo"
@@ -227,17 +251,39 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
                 onChange={handleImage}
               />
             </div>
-
             <div className="flexInput">
               <TextField
-                helperText="Please enter your Description"
-                id="description"
-                name="description"
-                label="Description"
-                value={state.description}
+                helperText="Please enter your Weight"
+                id="weight"
+                name="weight"
+                label="Weight"
+                value={state.weight}
                 type="text"
                 onChange={handleInputChange}
               />
+            </div>
+            <div className="flexInput">
+              <textarea
+                className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none"
+                placeholder="Description"
+                id="description"
+                name="description"
+                value={state.description}
+                onChange={handleInputChange}
+              ></textarea>
+              <div className="text-right mx-4 text-xs font-semibold">
+                {state.description.length <= 5000 ? (
+                  <>
+                    {state.description.length}
+                    <span> / 5000</span>
+                  </>
+                ) : (
+                  <div className="text-red-600">
+                    {state.description.length}{" "}
+                    <span className="text-black"> / 5000</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flexInput">
@@ -272,11 +318,23 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
               Back
             </Button>
             <Button
-              style={{ background: "green" }}
               variant="contained"
-              type="submit"
+              disabled={loading}
               onClick={handleSubmit}
             >
+              {loading && (
+                <CircularProgress
+                  color="inherit"
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
               Submit
             </Button>
           </div>

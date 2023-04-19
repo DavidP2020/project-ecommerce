@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   Button,
+  CircularProgress,
   MenuItem,
   Tab,
   Tabs,
@@ -20,6 +21,7 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
   });
   const [error, setError] = useState();
   const [picture, setPicture] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const setStatus = [
     {
@@ -48,7 +50,8 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
     formData.append("name", state.name);
     formData.append("slug", state.slug);
     formData.append("description", state.description);
-    formData.append("status", state.description);
+    formData.append("status", state.status);
+    setLoading(true);
     try {
       axios
         .post("/api/category", formData, {
@@ -71,6 +74,7 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
             handleClose();
           } else if (res.data.status === 403) {
             setError(res.data.validation_errors);
+            setLoading(false);
           }
         });
     } catch (err) {
@@ -122,15 +126,27 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
             />
           </div>
           <div className="flexInput">
-            <TextField
-              helperText="Please enter your Description"
+            <textarea
+              className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none"
+              placeholder="Description"
               id="description"
               name="description"
-              label="Description"
               value={state.description}
-              type="text"
               onChange={handleInputChange}
-            />
+            ></textarea>
+            <div className="text-right mx-4 text-xs font-semibold">
+              {state.description.length <= 255 ? (
+                <>
+                  {state.description.length}
+                  <span> / 255</span>
+                </>
+              ) : (
+                <div className="text-red-600">
+                  {state.description.length}{" "}
+                  <span className="text-black"> / 255</span>
+                </div>
+              )}
+            </div>
           </div>
           <div className="flexInput">
             <TextField
@@ -161,12 +177,20 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
         </div>
         <br />
         <div style={{ textAlign: "right" }}>
-          <Button
-            style={{ background: "green" }}
-            variant="contained"
-            type="submit"
-            onClick={handleSubmit}
-          >
+          <Button variant="contained" disabled={loading} onClick={handleSubmit}>
+            {loading && (
+              <CircularProgress
+                color="inherit"
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             Submit
           </Button>
         </div>

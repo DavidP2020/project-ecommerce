@@ -3,11 +3,12 @@ import axios from "axios";
 import { Box, CircularProgress, Pagination } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
+import { numberWithCommas } from "../../utils/comma";
 
 export default function ListProduct() {
   return (
     <div className="p-7 pt-4 text-2xl font-semibold flex-1 h-screen w-screen overflow-scroll">
-      <section className="section-container md:py-20">{Post()}</section>
+      <section className="section-container">{Post()}</section>
     </div>
   );
 }
@@ -34,6 +35,7 @@ function Post() {
       if (isMountered) {
         if (res.data.status === 200) {
           setProduct(res.data.product);
+          console.log(res.data);
           setLoading(false);
           setPages(Math.ceil(res.data.product.length / itemsPerPage));
         } else if (res.data.status === 404) {
@@ -57,58 +59,69 @@ function Post() {
   return (
     <>
       {loading ? (
-        <div className="screen bg-blue">
+        <div className="tableLoad">
           <Box sx={{ display: "flex" }}>
-            <div className="loading">
+            <div className="loading font-normal">
               <CircularProgress />
-              <div className="font-thin">Loading Product</div>
+              <div>Loading Detail Product</div>
             </div>
           </Box>
         </div>
       ) : (
-        <>
-          <h1 className="title-text text-black">Category / {id.slug}</h1>
-          <div className="flex flex-col flex-wrap justify-center justify-items-center items-center">
-            <div className="flex lg:flex-row flex-wrap flex-col m-12 justify-center justify-items-center items-center gap-10 border">
+        <div>
+          <div className="font-normal text-xs leading-10">
+            <Link to="/" className="hover:underline">
+              Home
+            </Link>
+            {" > "} <span className="capitalize">{id.slug}</span>
+          </div>
+          <h1 className="title-text text-black uppercase font-extrabold text-3xl">
+            {id.slug}
+          </h1>
+          <div className="flex-col">
+            <div className="flex sm:flex-row flex-wrap flex-col justify-center justify-items-center items-center gap-2 border">
               {product
                 .slice((page - 1) * itemsPerPage, page * itemsPerPage)
                 .map((data, i) => {
                   return (
                     <div key={i}>
-                      <Link to={`/category/${data.slugName}/${data.slug}`}>
-                        <div className="card">
-                          <img
-                            src={`http://localhost:8000/${data.photo}`}
-                            alt="photo"
-                            width={350}
-                            height={350}
-                            className="h-56"
-                          />
-                          <div className="p-5 flex-col gap-3">
-                            <h2 className="product-title text-center">
-                              {data.name}
-                            </h2>
+                      {data.product_color ? (
+                        <Link
+                          to={`/category/${data.category.slug}/${data.slug}`}
+                        >
+                          <div className="card mt-10">
+                            <img
+                              src={`http://localhost:8000/${data.photo}`}
+                              alt="photo"
+                              className="h-72 object-cover"
+                            />
+                            <div className="p-5 flex-col gap-3">
+                              <div className="flex flex-row justify-between items-center">
+                                <div className="font-normal text-xs">
+                                  {data.category.name}
+                                </div>
+                                <div className="font-normal text-xs">
+                                  {data.weight} Kg
+                                </div>
+                              </div>
+                              <div className="font-bold text-lg">
+                                {data.name}
+                              </div>
+                              <div className="font-extrabold italic text-xl mt-6">
+                                Rp. {numberWithCommas(data.product_color.price)}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </Link>
+                        </Link>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   );
                 })}
             </div>
-            <Box component="span">
-              <Pagination
-                count={noOfPages}
-                page={page}
-                onChange={handleChange}
-                defaultPage={1}
-                color="primary"
-                size="large"
-                showFirstButton
-                showLastButton
-              />
-            </Box>
           </div>
-        </>
+        </div>
       )}
     </>
   );
