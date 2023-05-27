@@ -287,7 +287,7 @@ const DetailProductSetting = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(detailData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -359,7 +359,7 @@ const DetailProductSetting = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(detailData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>

@@ -20,12 +20,19 @@ import DetailProduct from "./components/Product/DetailProduct";
 import NavbarPanel from "./components/Navbar/NavbarPanel";
 import Home from "./pages/Home";
 import DetailProductSetting from "./components/Product/Admin/DetailProduct/DetailProductSetting";
+import Location from "./pages/Location";
+import Footer from "./components/Home/Footer/Footer";
+import Checkout from "./components/Transaction/Checkout";
+import Shopnow from "./components/Product/Shopnow";
+import BrandPage from "./components/Brand/BrandPage";
+import BrandProduct from "./components/Brand/BrandProduct";
+import Wishlist from "./pages/Wishlist";
 function App() {
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(true);
-  const accessRole = sessionStorage.getItem("auth-role");
-  const accessToken = sessionStorage.getItem("auth-token");
+  const accessRole = localStorage.getItem("auth-role");
+  const accessToken = localStorage.getItem("auth-token");
   axios.defaults.headers.post["Content-Type"] = "application/json";
   axios.defaults.baseURL = "http://localhost:8000/";
   axios.defaults.withCredentials = true;
@@ -93,16 +100,28 @@ function App() {
 
       {!isLogin ? (
         // <div className="flex flex-wrap items-center justify-center h-screen w-screen overflow-scroll">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/category/:slug" element={<ListProduct />} />
-          <Route path="/category/:slug/:product" element={<DetailProduct />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/cart" element={<Cart />} />
-        </Routes>
+        <>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/shop-now" element={<Shopnow />} />
+            <Route path="/brands" element={<BrandPage />} />
+            <Route path="/brands/:name" element={<BrandProduct />} />
+            <Route path="/category" element={<Category />} />
+            <Route path="/category/:slug" element={<ListProduct />} />
+            <Route
+              path="/category/:slug/:product"
+              element={<DetailProduct />}
+            />
+            <Route path="/order" element={<Order />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/location" element={<Location />} />
+          </Routes>
+
+          <Footer />
+        </>
       ) : (
         // </div>
         <>
@@ -110,6 +129,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/shop-now" element={<Shopnow />} />
               <Route path="/about-us" element={<Aboutus />} />
               <Route path="/category" element={<Category />} />
               <Route path="/category/:slug" element={<ListProduct />} />
@@ -124,13 +144,19 @@ function App() {
               />
               <Route path="/order" element={<Order />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/brand" element={<Brand />} />
+              <Route path="/brands" element={<BrandPage />} />
+              <Route path="/brands/:name" element={<BrandProduct />} />
               <Route path="/color" element={<Color />} />
+              <Route path="/location" element={<Location />} />
+              <Route path="/checkout" element={<Checkout />} />
             </Routes>
           ) : (
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/shop-now" element={<Shopnow />} />
               <Route path="/about-us" element={<Aboutus />} />
               <Route path="/category" element={<Category />} />
               <Route path="/category/:slug" element={<ListProduct />} />
@@ -140,8 +166,15 @@ function App() {
               />
               <Route path="/order" element={<Order />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/location" element={<Location />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/brands" element={<BrandPage />} />
+              <Route path="/brands/:name" element={<BrandProduct />} />
             </Routes>
           )}
+
+          <Footer />
         </>
         // <div className="flex flex-wrap items-center justify-center h-screen w-screen overflow-scroll">
         // {/* <Navbar /> */}

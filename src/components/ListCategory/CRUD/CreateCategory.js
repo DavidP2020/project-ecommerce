@@ -97,6 +97,7 @@ export default function CreateCategory({ handleClose, fetchItem, ...props }) {
               <li>{error.name}</li>
               <li>{error.slug}</li>
               <li>{error.photo}</li>
+              <li>{error.description}</li>
             </ul>
           </div>
         ) : (

@@ -13,7 +13,7 @@ export default function Logout({ handleClose, ...props }) {
           console.log(resp.data);
           if (resp.data.status === 200) {
             alert(resp.data.message);
-            sessionStorage.clear();
+            localStorage.clear();
             handleClose();
             navigate("/");
             window.location.reload(false);

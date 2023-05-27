@@ -47,6 +47,7 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
     slug: "",
     description: "",
     weight: "",
+    unit: "",
     brand_id: "",
     status: "1",
   });
@@ -62,12 +63,28 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
     },
   ];
 
+  const setUnit = [
+    {
+      value: "kg",
+      label: "Kg",
+    },
+    {
+      value: "pcs",
+      label: "Pcs",
+    },
+    {
+      value: "lori",
+      label: "Lori",
+    },
+  ];
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("photo", picture.image);
     formData.append("category_id", state.category_id);
     formData.append("weight", state.weight);
+    formData.append("unit", state.unit);
     formData.append("brand_id", state.brand_id);
     formData.append("name", state.name);
     formData.append("slug", state.slug);
@@ -263,46 +280,63 @@ export default function CreateProduct({ handleClose, fetchItem, ...props }) {
               />
             </div>
             <div className="flexInput">
-              <textarea
-                className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none"
-                placeholder="Description"
-                id="description"
-                name="description"
-                value={state.description}
-                onChange={handleInputChange}
-              ></textarea>
-              <div className="text-right mx-4 text-xs font-semibold">
-                {state.description.length <= 5000 ? (
-                  <>
-                    {state.description.length}
-                    <span> / 5000</span>
-                  </>
-                ) : (
-                  <div className="text-red-600">
-                    {state.description.length}{" "}
-                    <span className="text-black"> / 5000</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flexInput">
               <TextField
                 select
-                label="Status"
-                helperText="Please select your Status"
-                name="status"
-                value={state.status}
+                label="Unit"
+                helperText="Please enter your Unit"
+                name="unit"
+                value={state.unit}
                 variant="outlined"
                 onChange={handleInputChange}
               >
-                {setStatus.map((option) => (
+                {setUnit.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
                 ))}
               </TextField>
             </div>
+          </div>
+          <div className="flexInput">
+            <textarea
+              className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none"
+              placeholder="Description"
+              id="description"
+              name="description"
+              value={state.description}
+              onChange={handleInputChange}
+            ></textarea>
+            <div className="text-right mx-4 text-xs font-semibold">
+              {state.description.length <= 5000 ? (
+                <>
+                  {state.description.length}
+                  <span> / 5000</span>
+                </>
+              ) : (
+                <div className="text-red-600">
+                  {state.description.length}{" "}
+                  <span className="text-black"> / 5000</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flexInput">
+            <TextField
+              select
+              label="Status"
+              helperText="Please select your Status"
+              name="status"
+              value={state.status}
+              variant="outlined"
+              onChange={handleInputChange}
+            >
+              {setStatus.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <br />
           <div style={{ textAlign: "right" }}>

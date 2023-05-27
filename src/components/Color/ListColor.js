@@ -225,7 +225,8 @@ const ListColor = () => {
                             {userData.photo ? (
                               <img
                                 src={`http://localhost:8000/${userData.photo}`}
-                                width="100%"
+                                width="50%"
+                                height="50%"
                                 alt="photo"
                               />
                             ) : (
@@ -233,7 +234,16 @@ const ListColor = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
-                          <TableCell align="center">{userData.color}</TableCell>
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                background: `${userData.color}`,
+                                width: "20px",
+                                height: "20px",
+                                marginRight: "5px",
+                              }}
+                            ></div>
+                          </TableCell>
                           <TableCell align="center">
                             {userData.status === 1 ? (
                               <div>
@@ -270,7 +280,7 @@ const ListColor = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -278,7 +288,7 @@ const ListColor = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -304,7 +314,8 @@ const ListColor = () => {
                             {userData.photo ? (
                               <img
                                 src={`http://localhost:8000/${userData.photo}`}
-                                width="100%"
+                                width="50%"
+                                height="50%"
                                 alt="photo"
                               />
                             ) : (
@@ -312,7 +323,15 @@ const ListColor = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
-                          <TableCell align="center">{userData.color}</TableCell>
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                background: `${userData.color}`,
+                              }}
+                            >
+                              {userData.color}
+                            </div>
+                          </TableCell>
                           <TableCell align="center">
                             {userData.status === 1 ? (
                               <div>
@@ -349,7 +368,7 @@ const ListColor = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -357,7 +376,7 @@ const ListColor = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>

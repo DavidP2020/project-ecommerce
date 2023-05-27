@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import { numberWithCommas } from "../../utils/comma";
 
-export default function ListProduct() {
+export default function BrandProduct() {
   return (
     <div className="p-7 pt-4 text-2xl font-semibold flex-1a">
       <section className="section-container">{Post()}</section>
@@ -19,7 +19,6 @@ function Post() {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState([]);
   const itemsPerPage = 9;
-  const [total, setTotal] = useState([]);
   const [page, setPage] = useState(1);
 
   const handleChange = (event, value) => {
@@ -31,16 +30,16 @@ function Post() {
     try {
       console.log(id);
       let isMountered = true;
-      let res = await axios.get(`/api/fetchProduct/${id.slug}`);
+      let res = await axios.get(`/api/fetchBrand/${id.name}`);
 
       if (isMountered) {
         if (res.data.status === 200) {
           setProduct(res.data.product);
-          setTotal(res.data.total);
+          console.log(res.data);
           setLoading(false);
           setPages(Math.ceil(res.data.product.length / itemsPerPage));
         } else if (res.data.status === 404) {
-          navigate.push("/category");
+          navigate.push("/brands");
           swal("Warning", res.data.message, "error");
         }
       }
@@ -64,7 +63,7 @@ function Post() {
           <Box sx={{ display: "flex" }}>
             <div className="loading font-normal">
               <CircularProgress />
-              <div>Loading Product</div>
+              <div>Loading Brand Product</div>
             </div>
           </Box>
         </div>
@@ -74,10 +73,10 @@ function Post() {
             <Link to="/" className="hover:underline">
               Home
             </Link>
-            {" > "} <span className="capitalize">{id.slug}</span>
+            {" > "} <span className="capitalize">{id.name}</span>
           </div>
           <h1 className="title-text text-black uppercase font-extrabold text-3xl">
-            {id.slug}
+            {id.name}
           </h1>
           <div className="flex-col">
             <div className="flex sm:flex-row flex-wrap flex-col justify-center justify-items-center items-center gap-2 border">
@@ -103,7 +102,7 @@ function Post() {
                                   {data.category.name}
                                 </div>
                                 <div className="font-normal text-xs">
-                                  {data.weight} {data.unit}
+                                  {data.weight} Kg
                                 </div>
                               </div>
                               <div className="font-bold text-2xl my-2">
@@ -116,9 +115,6 @@ function Post() {
                               </div>
                               <div className="font-extrabold text-xl mt-2 text-red-500">
                                 Rp. {numberWithCommas(data.product_color.price)}
-                              </div>
-                              <div className="text-gray-500 font-medium text-xs mt-2">
-                                {total} Item left
                               </div>
                             </div>
                           </div>

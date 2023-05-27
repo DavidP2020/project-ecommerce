@@ -1,8 +1,14 @@
 import logo from "../../assets/logo.png";
 import { Box, Fade, Modal, Popover, Toolbar, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Setting/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import ItemNavbarContainer from "./ItemNavbarContainer";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Profile from "../Home/Profile/Profile";
+import axios from "axios";
 
 export default function NavbarPanel() {
   const style = {
@@ -19,13 +25,22 @@ export default function NavbarPanel() {
   const [navbar, setNavbar] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogout, setOpenLogout] = useState(false);
-  const accessToken = sessionStorage.getItem("auth-token");
-  const username = sessionStorage.getItem("auth-name");
-  const accessRole = sessionStorage.getItem("auth-role");
+  const accessToken = localStorage.getItem("auth-token");
+  const username = localStorage.getItem("auth-name");
+  const accessRole = localStorage.getItem("auth-role");
+  const accessEmail = localStorage.getItem("auth-email");
+  const [profile, setProfile] = useState([]);
+
+  const [id, setId] = useState();
+  const [openEdit, setOpenEdit] = useState(false);
   const handleOpenLogout = () => {
     setOpenLogout(true);
   };
   const handleCloseLogout = () => setOpenLogout(false);
+  const handleOpenEdit = () => {
+    setOpenEdit(true);
+  };
+  const handleCloseEdit = () => setOpenEdit(false);
 
   const handleClickPop = (event) => {
     event.preventDefault();
@@ -44,6 +59,20 @@ export default function NavbarPanel() {
     navigate("/");
     window.location.reload(false);
   };
+  const fetchItem = () => {
+    try {
+      axios.get(`/api/profile/${accessEmail}`).then((resp) => {
+        if (resp.data.status === 200) {
+          setProfile(resp.data.user);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchItem();
+  }, []);
   return (
     <nav className="bg-primary text-white flex flex-col mx-auto" id="Nav">
       <div className="flex w-full font-light text-sm py-4 px-20">
@@ -65,7 +94,7 @@ export default function NavbarPanel() {
             <ul className="text-xs font-medium flex gap-5 pb-4">
               <li>
                 <Link to="/help" className="hover:underline">
-                  Help
+                  Order Status
                 </Link>
               </li>
               <li>
@@ -86,7 +115,7 @@ export default function NavbarPanel() {
                   </Link>
                 </li>
               )}
-              <li>EN | ID</li>
+              {/* <li>EN | ID</li> */}
               {accessToken ? (
                 <li className="font-extrabold">{username}</li>
               ) : (
@@ -97,62 +126,39 @@ export default function NavbarPanel() {
 
           <div className="flex w-full justify-between items-center">
             <ul className="text-sm font-semibold uppercase flex gap-8">
-              {accessRole === "ADMIN" ? (
-                <>
-                  <li className="hover:underline">
-                    <Link to="/dashboard">Dashboard</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/category">Category</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/product">Product</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/brand">Brand</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/color">Color</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/order">Order</Link>
-                  </li>
-                </>
-              ) : (
-                <>
-                  {accessRole ? (
-                    <li className="hover:underline">
-                      <Link to="/dashboard">Dashboard</Link>
-                    </li>
-                  ) : (
-                    ""
-                  )}
-                  <li className="hover:underline">
-                    <Link to="/category">Category</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/brand">Brand</Link>
-                  </li>
-                  <li className="hover:underline">
-                    <Link to="/order">Order</Link>
-                  </li>
-                </>
-              )}
+              <ItemNavbarContainer ctr={"1"} />
             </ul>
             <div className="flex flex-col">
               <div className="flex gap-9">
-                <ul className="text-sm font-medium flex gap-4">
-                  <li>
-                    <Link to="/cart">
-                      <i className="fas fa-cart-shopping text-xl hover:opacity-70 hover:scale-125 mr-3"></i>
-                    </Link>
-                  </li>
+                <ul className="text-sm font-medium flex gap-2">
+                  {accessRole === "USER" ? (
+                    <>
+                      <li>
+                        <Link to="/wishlist">
+                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                            <FavoriteIcon />
+                          </i>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/cart">
+                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                            <ShoppingCartCheckoutIcon />
+                          </i>
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    ""
+                  )}
                   {accessToken ? (
                     <li>
                       <i
-                        className="fas fa-sharp fa-solid fa-gear text-xl hover:opacity-70 hover:scale-125"
+                        className="text-xl hover:opacity-70 hover:scale-125"
                         onClick={(e) => handleClickPop(e)}
-                      ></i>
+                      >
+                        <SettingsIcon />
+                      </i>
                     </li>
                   ) : (
                     ""
@@ -171,7 +177,10 @@ export default function NavbarPanel() {
                 >
                   <Typography className="w-full" component={"div"}>
                     <div className="popOver">
-                      <button className="nav-links-sign" onClick={handleLogout}>
+                      <button
+                        className="nav-links-sign"
+                        onClick={handleOpenEdit}
+                      >
                         <i
                           className="mr-6 m-2 fas fa-solid fa-user"
                           aria-hidden="true"
@@ -179,6 +188,47 @@ export default function NavbarPanel() {
                         Profile
                       </button>
                     </div>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={openEdit}
+                      onClose={handleCloseEdit}
+                      closeAfterTransition
+                      className="overflow-scroll h-11/12"
+                    >
+                      <Fade in={openEdit}>
+                        <Box
+                          sx={style}
+                          style={{
+                            background: "white",
+                            width: "800",
+                          }}
+                          component={"div"}
+                        >
+                          <Toolbar style={{ marginLeft: "-1rem" }}>
+                            <Typography component="div" sx={{ flexGrow: 2 }}>
+                              <b className="text-xl">Profile</b>
+                            </Typography>
+                            <i
+                              className="icon fa fa-times"
+                              aria-hidden="true"
+                              onClick={handleCloseEdit}
+                            ></i>
+                          </Toolbar>
+                          <Typography
+                            id="transition-modal-description"
+                            sx={{ mt: 2 }}
+                            component={"div"}
+                          >
+                            <Profile
+                              data={profile}
+                              handleClose={handleCloseEdit}
+                              fetchItem={fetchItem}
+                            />
+                          </Typography>
+                        </Box>
+                      </Fade>
+                    </Modal>
                     <div className="popOver">
                       <button className="nav-links-sign" onClick={handleLogout}>
                         <i
@@ -255,62 +305,33 @@ export default function NavbarPanel() {
       </div>
       <div className={`mobileMenu ${navbar ? "" : "hidden"}`}>
         <ul className="text-sm font-semibold uppercase flex flex-col gap-8">
-          {accessRole === "ADMIN" ? (
-            <>
-              <li className="navbar-links">
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/category">Category</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/product">Product</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/brand">Brand</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/color">Color</Link>
-              </li>{" "}
-              <li className="navbar-links">
-                <Link to="/order">Order</Link>
-              </li>
-            </>
-          ) : (
-            <>
-              {accessRole ? (
-                <li className="navbar-links">
-                  <Link to="/dashboard">Dashboard</Link>
-                </li>
-              ) : (
-                ""
-              )}
-              <li className="navbar-links">
-                <Link to="/category">Category</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/brand">Brand</Link>
-              </li>
-              <li className="navbar-links">
-                <Link to="/order">Order</Link>
-              </li>
-            </>
-          )}
+          <ItemNavbarContainer ctr={"2"} />
 
           <div className="flex px-6 font-bold">
-            <div className="flex-row">Others</div>
+            <div className="flex-row">Lainnya</div>
             <ul className="flex justify-end items-end w-full gap-2">
               <li>
+                <Link to="/wishlist">
+                  <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                    <FavoriteIcon />
+                  </i>
+                </Link>
+              </li>
+              <li>
                 <Link to="/cart">
-                  <i className="fas fa-cart-shopping text-xl hover:opacity-70 hover:scale-125 mr-3"></i>
+                  <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                    <ShoppingCartCheckoutIcon />
+                  </i>
                 </Link>
               </li>
               {accessToken ? (
                 <li>
                   <i
-                    className="fas fa-sharp fa-solid fa-gear text-xl hover:opacity-70 hover:scale-125"
+                    className="text-xl hover:opacity-70 hover:scale-125"
                     onClick={(e) => handleClickPop(e)}
-                  ></i>
+                  >
+                    <SettingsIcon />
+                  </i>
                 </li>
               ) : (
                 ""
@@ -319,8 +340,8 @@ export default function NavbarPanel() {
           </div>
           <ul className="text-xs font-medium flex-col w-full -mt-8 mb-4">
             <li className="nav-links">
-              <Link to="/help" className="hover:underline">
-                Help
+              <Link to="/order" className="hover:underline">
+                Order Status
               </Link>
             </li>
             <li className="nav-links">
@@ -341,7 +362,7 @@ export default function NavbarPanel() {
                 </Link>
               </li>
             )}
-            <li className="nav-links">EN | ID</li>
+            {/* <li className="nav-links">EN | ID</li> */}
           </ul>
         </ul>
       </div>

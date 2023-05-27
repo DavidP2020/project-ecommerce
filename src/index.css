@@ -17,8 +17,8 @@ body {
     shadow-lg shadow-slate-400;
 }
 .card {
-  @apply bg-white text-gray-700
-    w-80 min-h-[10rem] ml-4 mr-4 justify-center items-center
+  @apply bg-white text-gray-700 gap-1
+    w-80 min-h-[10rem] mx-4 justify-center items-center
     shadow-lg shadow-slate-400;
 }
 .cardPayment {

@@ -30,8 +30,8 @@ export default function Register() {
             if (resp.data.status === 200) {
               alert(resp.data.message);
               const accessToken = resp.data.token;
-              sessionStorage.setItem("auth-token", accessToken);
-              sessionStorage.setItem("auth-name", resp.data.username);
+              localStorage.setItem("auth-token", accessToken);
+              localStorage.setItem("auth-name", resp.data.username);
               navigate("/");
               window.location.reload(false);
             } else {
@@ -61,7 +61,7 @@ export default function Register() {
         >
           <h1 className="text-3xl text-center p-4 ">Sign Up</h1>
           <div className="text-xs text-center p-2">
-            <span>Please Sign Up to continue</span>
+            <span>Mohon Registrasi Terlebih Dahulu Untuk Melanjutkannya</span>
           </div>
           {error ? (
             <div className="text-center bg-red-500 w-full text-white p-4 mt-2 mb-4 text-xs">
@@ -124,7 +124,7 @@ export default function Register() {
               Sign Up
             </button>
             <div className="text-center text-xs">
-              Already Have An Account ? <Link to="/login">Sign In</Link>
+              Sudah Memiliki Akun ? <Link to="/login">Sign In</Link>
             </div>
           </div>
         </form>

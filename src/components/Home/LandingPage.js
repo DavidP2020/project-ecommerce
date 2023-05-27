@@ -1,6 +1,7 @@
 import React from "react";
 import Bg from "../../assets/Photo2.jpg";
 import "./home.css";
+import { Link } from "react-router-dom";
 // import Scrollup from "./Scrollup";
 export default function () {
   return (
@@ -23,9 +24,11 @@ export default function () {
             building materials. Let's Shop Now !{" "}
           </p>
           <div className="mt-6">
-            <button className="bg-black rounded-md text-white px-12 py-2 mt-4 hover:opacity-70">
-              Shop Now
-            </button>
+            <Link to="/shop-now" className="hover:underline">
+              <button className="bg-black rounded-md text-white px-12 py-2 mt-4 hover:opacity-70">
+                Shop Now
+              </button>
+            </Link>
           </div>
         </div>
 

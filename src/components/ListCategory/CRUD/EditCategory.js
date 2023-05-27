@@ -103,6 +103,7 @@ export default function EditCategory({
             <li>{error.name}</li>
             <li>{error.slug}</li>
             <li>{error.photo}</li>
+            <li>{error.description}</li>
           </div>
         ) : (
           ""
@@ -118,7 +119,7 @@ export default function EditCategory({
               type="text"
               onChange={handleInputChange}
             />
-          </div>{" "}
+          </div>
           <div className="flexInput">
             <TextField
               helperText="Please enter your Slug for Seo Website / URL"

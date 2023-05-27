@@ -2,6 +2,7 @@ import { Box, Fade, Modal, Popover, Toolbar, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logout from "../Setting/Logout";
+import Profile from "../Home/Profile/Profile";
 
 export default function Navbar() {
   const style = {
@@ -17,10 +18,17 @@ export default function Navbar() {
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogout, setOpenLogout] = useState(false);
+  const [id, setId] = useState();
+  const [openEdit, setOpenEdit] = useState(false);
   const handleOpenLogout = () => {
     setOpenLogout(true);
   };
   const handleCloseLogout = () => setOpenLogout(false);
+  const handleOpenEdit = (id) => {
+    setId(id);
+    setOpenEdit(true);
+  };
+  const handleCloseEdit = () => setOpenEdit(false);
 
   const handleClickPop = (event) => {
     event.preventDefault();
@@ -63,7 +71,7 @@ export default function Navbar() {
       >
         <Typography className="w-full" component={"div"}>
           <div className="popOver">
-            <button className="nav-links-sign" onClick={handleLogout}>
+            <button className="nav-links-sign" onClick={() => handleOpenEdit}>
               <i
                 className="mr-6 m-2 fas fa-solid fa-user"
                 aria-hidden="true"
@@ -72,7 +80,10 @@ export default function Navbar() {
             </button>
           </div>
           <div className="popOver">
-            <button className="nav-links-sign" onClick={handleLogout}>
+            <button
+              className="nav-links-sign"
+              // onClick={handleLogout}
+            >
               <i
                 className="mr-6 m-2 fas fa-sharp fa-regular fa-circle-info"
                 aria-hidden="true"
@@ -83,7 +94,7 @@ export default function Navbar() {
           <div className="popOver">
             <button
               className="nav-links-sign"
-              onClick={() => handleOpenLogout()}
+              // onClick={() => handleOpenLogout()}
             >
               <i
                 className="mr-6 m-2 fas fa-solid fa-right-from-bracket"
@@ -124,6 +135,36 @@ export default function Navbar() {
           </Modal>
         </Typography>
       </Popover>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openEdit}
+        onClose={handleCloseEdit}
+        closeAfterTransition
+        className="overflow-scroll h-11/12"
+      >
+        <Fade in={openEdit}>
+          <Box sx={style} style={{ background: "white" }} component={"div"}>
+            <Toolbar style={{ marginLeft: "-1rem" }}>
+              <Typography component="div" sx={{ flexGrow: 2 }}>
+                <b className="text-xl">Profile</b>
+              </Typography>
+              <i
+                className="icon fa fa-times"
+                aria-hidden="true"
+                onClick={handleCloseEdit}
+              ></i>
+            </Toolbar>
+            <Typography
+              id="transition-modal-description"
+              sx={{ mt: 2 }}
+              component={"div"}
+            >
+              <Profile data={id} handleClose={handleCloseEdit} />
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
     </>
   );
 }

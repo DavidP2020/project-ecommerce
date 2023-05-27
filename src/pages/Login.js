@@ -20,12 +20,15 @@ export default function Login() {
             if (resp.data.status === 200) {
               alert(resp.data.message);
               const accessToken = resp.data.token;
-              sessionStorage.setItem("auth-token", accessToken);
-              sessionStorage.setItem("auth-name", resp.data.username);
-              sessionStorage.setItem("auth-role", resp.data.role);
+              localStorage.setItem("auth-token", accessToken);
+              localStorage.setItem("auth-name", resp.data.username);
+              localStorage.setItem("auth-role", resp.data.role);
+              localStorage.setItem("auth-email", resp.data.email);
               navigate("/");
               window.location.reload(false);
             } else if (resp.data.status === 401) {
+              alert(resp.data.message);
+            } else if (resp.data.status === 403) {
               alert(resp.data.message);
             } else {
               setError(resp.data.validation_errors);
@@ -48,7 +51,7 @@ export default function Login() {
         >
           <h1 className="text-3xl text-center p-4">Sign In</h1>
           <div className="text-xs text-center p-2">
-            <span>Please Sign in to continue</span>
+            <span>Mohon Registrasi Terlebih Dahulu Untuk Melanjutkannya</span>
           </div>
           {error ? (
             <div className="text-center bg-red-500 w-full text-white p-4 mt-2 mb-4">
@@ -88,8 +91,11 @@ export default function Login() {
             <button className="buttonPrimary" type="submit">
               Sign In
             </button>
+            <div className="text-right text-xs">
+              <Link to="/register">Lupa Password ?</Link>
+            </div>
             <div className="text-center text-xs">
-              Don't Have An Account ? <Link to="/register">Sign Up</Link>
+              Belum Memiliki Akun ? <Link to="/register">Sign Up</Link>
             </div>
           </div>
         </form>

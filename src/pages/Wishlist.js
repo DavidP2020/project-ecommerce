@@ -15,49 +15,18 @@ import swal from "sweetalert";
 import { Link, useNavigate } from "react-router-dom";
 import TotalPrice from "../components/Transaction/TotalPrice";
 
-export default function Cart() {
-  const [cart, setCart] = useState([]);
+export default function Wishlist() {
+  const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState([]);
-  const [itemQty, setitemQty] = useState(0);
-  const [qty, setQty] = useState(1);
   const navigate = useNavigate();
 
-  const handleDecrement = (cart_id) => {
-    setCart((cart) =>
-      cart.map((item) =>
-        cart_id === item.id
-          ? {
-              ...item,
-              product_qty: item.product_qty - (item.product_qty > 1 ? 1 : 0),
-            }
-          : item
-      )
-    );
-    updateCart(cart_id, "dec");
-  };
-
-  const handleIncrement = (cart_id) => {
-    setCart((cart) =>
-      cart.map((item) =>
-        cart_id === item.id
-          ? {
-              ...item,
-              product_qty:
-                item.product_qty + (item.product_qty < item.qty ? 1 : 0),
-            }
-          : item
-      )
-    );
-    updateCart(cart_id, "inc");
-  };
   const fetchItem = async () => {
     try {
-      let res = await axios.get(`/api/cart`);
+      let res = await axios.get(`/api/wishlist`);
       console.log(res);
       if (res.data.status === 200) {
         console.log(res.data);
-        setCart(res.data.cart);
-        setQty(res.data.cart.product_qty);
+        setWishlist(res.data.wishlist);
         setLoading(false);
       } else if (res.data.status === 404) {
         swal("Warning", res.data.message, "error");
@@ -75,39 +44,11 @@ export default function Cart() {
       console.log(error);
     }
   };
-  function updateCart(cart_id, scope) {
-    try {
-      axios.put(`/api/cart-updateQuantity/${cart_id}/${scope}`).then((res) => {
-        console.log(res.data);
 
-        if (res.data.status === 200) {
-          fetchItem();
-          swal({
-            title: "Success!",
-            text: res.data.message,
-            icon: "success",
-            button: false,
-            timer: 1500,
-          });
-        } else if (res.data.status === 401) {
-          swal({
-            title: "Error!",
-            text: res.data.message,
-            icon: "error",
-            button: false,
-            timer: 1500,
-          });
-        }
-      });
-    } catch (err) {
-      alert(err.message);
-    }
-  }
-
-  const deleteCart = (e, cart_id) => {
+  const deleteWishlist = (e, wishlist_id) => {
     e.preventDefault();
     try {
-      axios.delete(`/api/cart/${cart_id}`).then((res) => {
+      axios.delete(`/api/wishlist/${wishlist_id}`).then((res) => {
         if (res.data.status === 200) {
           fetchItem();
           swal({
@@ -131,10 +72,59 @@ export default function Cart() {
       alert(err.message);
     }
   };
+  const handleSubmit = (e, product_id) => {
+    e.preventDefault();
+    const data = {
+      product_id: product_id,
+      product_qty: 1,
+    };
+    console.log(data);
+    try {
+      axios.post("/api/cart", data).then((res) => {
+        console.log(res.data);
 
+        if (res.data.status === 201) {
+          console.log(data);
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 409) {
+          swal({
+            title: "Warning!",
+            text: res.data.message,
+            icon: "warning",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 404) {
+          swal({
+            title: "Warning!",
+            text: res.data.message,
+            icon: "warning",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 401) {
+          swal({
+            title: "Error!",
+            text: res.data.message,
+            icon: "error",
+            button: false,
+            timer: 1500,
+          });
+        }
+      });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
   useEffect(() => {
     fetchItem();
-    document.title = "Cart";
+    document.title = "Wishlist";
   }, []);
 
   return (
@@ -143,23 +133,23 @@ export default function Cart() {
         <Link to="/" className="hover:underline">
           Home
         </Link>
-        {" > "} <span className="capitalize"> Cart</span>
+        {" > "} <span className="capitalize"> Wishlist</span>
       </div>
-      <h2 className="font-bold text-2xl m-6">Cart</h2>
+      <h2 className="font-bold text-2xl m-6">Wishlist</h2>
       {loading ? (
         <div className="tableLoad">
           <Box sx={{ display: "flex" }}>
             <div className="loading font-normal">
               <CircularProgress />
-              <div>Loading Cart</div>
+              <div>Loading Wishlist</div>
             </div>
           </Box>
         </div>
       ) : (
         <>
-          {cart.length > 0 ? (
+          {wishlist.length > 0 ? (
             <div className="flex flex-col justify-items-center items-center">
-              {cart.length !== 0 && (
+              {wishlist.length !== 0 && (
                 <Box
                   sx={{
                     width: "100%",
@@ -169,7 +159,7 @@ export default function Cart() {
                 >
                   <nav aria-label="secondary mailbox folders">
                     <List sx={{ width: "100%" }}>
-                      {cart.map((data, i) => {
+                      {wishlist.map((data, i) => {
                         return (
                           <ListItem
                             alignItems="flex-cemter"
@@ -198,11 +188,15 @@ export default function Cart() {
                                       <div className="left-side w-full md:w-1/2 text-2xl font-bold">
                                         {data.productName}
                                       </div>
-                                      <div className="right-side w-1/2 text-right font-bold mt-1 text-lg md:block hidden">
-                                        Rp.
-                                        {numberWithCommas(
-                                          data.price * data.product_qty
-                                        )}
+                                      <div className="right-side w-full lg:w-1/2 text-right">
+                                        <button
+                                          className="bg-red-500 p-3 rounded-md text-white hover:opacity-90"
+                                          onClick={(e) =>
+                                            deleteWishlist(e, data.id)
+                                          }
+                                        >
+                                          <i className="fa-solid fa-trash"></i>
+                                        </button>
                                       </div>
                                     </div>
                                   </Typography>
@@ -238,46 +232,19 @@ export default function Cart() {
                                       </div>
                                     </button>
                                   </div>
-                                  <div className="flex leading-none p-2 pt-2 justify-start items-center">
-                                    <div className="flex justify-start items-center">
-                                      <div className="increment-input flex flex-col overflow-hidden">
-                                        <span>
-                                          <button
-                                            className="bg-white mr-2 p-2 font-normal rounded-md border-solid border-2 border-black"
-                                            onClick={() =>
-                                              handleDecrement(data.id)
-                                            }
-                                          >
-                                            <i className="font-extrabold fa-solid fa-minus"></i>
-                                          </button>
-                                          <input
-                                            type="text"
-                                            id="qty"
-                                            nama="qty"
-                                            value={data.product_qty}
-                                            readOnly
-                                            className="w-1/5 focus:outline-none active:outline-none text-center text-md font-normal text-black"
-                                          />
-                                          <button
-                                            className="bg-white m-2 p-2 font-normal rounded-md border-solid border-2 border-black"
-                                            onClick={() =>
-                                              handleIncrement(data.id)
-                                            }
-                                          >
-                                            <i className="font-extrabold fa-solid fa-plus"></i>
-                                          </button>
-                                        </span>
-                                        <div className="font-bold text-xs">
-                                          {data.qty} Item left
-                                        </div>
-                                      </div>
+                                  <div className="flex lg:flex-row flex-col leading-none p-2 pt-2 justify-start items-center">
+                                    <div className="w-full lg:w-1/2 lg:text-left text-center font-bold text-xs my-2">
+                                      {data.qty} Item left
                                     </div>
                                     <div className="w-full text-right">
                                       <button
-                                        className="bg-red-500 p-3 rounded-md text-white hover:opacity-90"
-                                        onClick={(e) => deleteCart(e, data.id)}
+                                        className="bg-primary text-white text-sm font-medium px-14 md:px-4  py-2 rounded-md mx-4"
+                                        type="button"
+                                        onClick={(e) =>
+                                          handleSubmit(e, data.product_id)
+                                        }
                                       >
-                                        <i className="fa-solid fa-trash"></i>
+                                        Add to Cart
                                       </button>
                                     </div>
                                   </div>
@@ -291,13 +258,12 @@ export default function Cart() {
                       })}
                     </List>
                   </nav>
-                  <TotalPrice total={cart} action={"checkout"} />
                 </Box>
               )}
             </div>
           ) : (
             <div className="flex items-center justify-center h-96">
-              Your Shopping Cart is Empty
+              Your Wishlist is Empty
             </div>
           )}
         </>

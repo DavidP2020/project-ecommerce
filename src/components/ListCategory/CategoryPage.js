@@ -87,13 +87,13 @@ export default function CategoryPage() {
   }, []);
 
   return (
-    <div className="mx-10 my-20">
-      <section className="flex w-full  justify-center mb-10">
+    <div className="mx-10 my-16 bg-white pt-6">
+      <section className="flex w-full justify-center mb-10">
         <h1 className="text-2xl font-bold uppercase mt-4 lg:mt-0">
           Shop By Categories
         </h1>
       </section>
-      <div className="flex flex-col gap-2 text-center bg-white ">
+      <div className="flex flex-col gap-2 text-center ">
         <div className="slider w-full">
           <Slider {...settings}>
             {listPost.map((data, i) => {

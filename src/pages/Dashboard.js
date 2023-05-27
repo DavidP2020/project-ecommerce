@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "../App.css";
 
 export default function Dashboard() {
-  const username = sessionStorage.getItem("auth-name");
+  const username = localStorage.getItem("auth-name");
   useEffect(() => {
     document.title = "Dashboard";
   }, []);

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Menu({ open, ...props }) {
   const [idx, setIdx] = useState(0);
-  const accessToken = sessionStorage.getItem("auth-token");
+  const accessToken = localStorage.getItem("auth-token");
 
   const Menus = [
     {

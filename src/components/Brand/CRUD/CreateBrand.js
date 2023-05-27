@@ -15,6 +15,7 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
     status: "1",
   });
   const [error, setError] = useState();
+  const [picture, setPicture] = useState([]);
   const [loading, setLoading] = useState(false);
   const setStatus = [
     {
@@ -32,31 +33,41 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
     setState({ ...state, [name]: value });
   };
 
+  const handleImage = (e) => {
+    setPicture({ image: e.target.files[0] });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append("name", state.name);
+    formData.append("photo", picture.image);
     formData.append("status", state.status);
     setLoading(true);
     try {
-      axios.post("/api/brand", formData).then((res) => {
-        if (res.data.status === 200) {
-          swal({
-            title: "Success!",
-            text: res.data.message,
-            icon: "success",
-            button: false,
-            timer: 1500,
-          });
-          setError("");
-          fetchItem();
-          handleClose();
-        } else if (res.data.status === 403) {
-          setError(res.data.validation_errors);
-          setLoading(false);
-        }
-      });
+      axios
+        .post("/api/brand", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            swal({
+              title: "Success!",
+              text: res.data.message,
+              icon: "success",
+              button: false,
+              timer: 1500,
+            });
+            setError("");
+            fetchItem();
+            handleClose();
+          } else if (res.data.status === 403) {
+            setError(res.data.validation_errors);
+            setLoading(false);
+          }
+        });
     } catch (err) {
       alert(err.message);
     }
@@ -75,6 +86,7 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
             <ul>
               <li>{error.name}</li>
+              <li>{error.photo}</li>
             </ul>
           </div>
         ) : (
@@ -90,6 +102,15 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
               value={state.name}
               type="text"
               onChange={handleInputChange}
+            />
+          </div>
+          <div className="flexInput">
+            <TextField
+              id="photo"
+              name="photo"
+              helperText="Please input your image"
+              type="file"
+              onChange={handleImage}
             />
           </div>
           <div className="flexInput">

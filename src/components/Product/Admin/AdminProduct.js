@@ -269,7 +269,7 @@ const AdminProduct = () => {
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
-                            {userData.weight} Kg
+                            {userData.weight} {userData.unit}
                           </TableCell>
                           <TableCell align="center">
                             <i
@@ -324,7 +324,7 @@ const AdminProduct = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -332,7 +332,7 @@ const AdminProduct = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -366,7 +366,7 @@ const AdminProduct = () => {
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
-                            {userData.weight} Kg
+                            {userData.weight} {userData.unit}
                           </TableCell>
                           <TableCell align="center">
                             {userData.trending === 1 ? (
@@ -436,7 +436,7 @@ const AdminProduct = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -444,7 +444,7 @@ const AdminProduct = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -478,7 +478,7 @@ const AdminProduct = () => {
           <Box sx={style} style={{ background: "white" }} component={"div"}>
             <Toolbar style={{ marginLeft: "-1rem" }}>
               <Typography component="div" sx={{ flexGrow: 2 }}>
-                <b className="text-xl">Description Category</b>
+                <b className="text-xl">Description Product</b>
               </Typography>
               <i
                 className="icon fa fa-times"

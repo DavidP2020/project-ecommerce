@@ -74,16 +74,26 @@
 .slider {
   margin: 0 auto;
 }
-
+.sliders {
+  width: 90%;
+  margin: 0 auto;
+}
+.slick-dots {
+  background-color: white;
+}
 .slick-slide > div {
   margin: 0 10px;
 }
 .slick-list {
   margin: 0 -10px;
 }
-.carded {
+.card {
   border: 1px solid #fff;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
+}
+
+html {
+  scroll-behavior: smooth;
 }

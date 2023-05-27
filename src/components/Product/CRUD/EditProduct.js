@@ -49,6 +49,7 @@ export default function EditProduct({
     slug: data.slug,
     description: data.description,
     weight: data.weight,
+    unit: data.unit,
     brand_id: data.brand_id,
     status: data.status,
   });
@@ -66,7 +67,20 @@ export default function EditProduct({
       label: "Active",
     },
   ];
-
+  const setUnit = [
+    {
+      value: "kg",
+      label: "Kg",
+    },
+    {
+      value: "pcs",
+      label: "Pcs",
+    },
+    {
+      value: "lori",
+      label: "Lori",
+    },
+  ];
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -75,6 +89,7 @@ export default function EditProduct({
     formData.append("category_id", state.category_id);
     formData.append("brand_id", state.brand_id);
     formData.append("weight", state.weight);
+    formData.append("unit", state.unit);
     formData.append("name", state.name);
     formData.append("slug", state.slug);
     formData.append("trending", trending);
@@ -270,6 +285,23 @@ export default function EditProduct({
                 type="text"
                 onChange={handleInputChange}
               />
+            </div>
+            <div className="flexInput">
+              <TextField
+                select
+                label="Unit"
+                helperText="Please enter your Unit"
+                name="unit"
+                value={state.unit}
+                variant="outlined"
+                onChange={handleInputChange}
+              >
+                {setUnit.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
             <div className="flexInput">
               <textarea

@@ -3,18 +3,21 @@ import axios from "axios";
 import {
   Box,
   CircularProgress,
-  Pagination,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import swal from "sweetalert";
 import { numberWithCommas } from "../../utils/comma";
 import "./Detail.css";
+import { pink } from "@mui/material/colors";
 export default function DetailProduct() {
   return (
-    <div className=" pt-4 text-2xl font-semibold flex-1 h-screen">
-      <section className="section-container">{Post()}</section>
+    <div className=" pt-4 text-2xl font-semibold flex-1 h-full">
+      <section className="section-container relative">{Post()}</section>
     </div>
   );
 }
@@ -43,6 +46,7 @@ function Post() {
     });
   };
 
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleDecrement = () => {
     if (qty > 1) {
       setQty((prevCount) => prevCount - 1);
@@ -103,6 +107,56 @@ function Post() {
             title: "Warning!",
             text: res.data.message,
             icon: "warning",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 404) {
+          swal({
+            title: "Warning!",
+            text: res.data.message,
+            icon: "warning",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 401) {
+          swal({
+            title: "Error!",
+            text: res.data.message,
+            icon: "error",
+            button: false,
+            timer: 1500,
+          });
+        }
+      });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleWish = (e) => {
+    e.preventDefault();
+    const data = {
+      product_id: cartProduct,
+    };
+    console.log(data);
+    try {
+      axios.post("/api/wishlist", data).then((res) => {
+        console.log(res.data);
+
+        if (res.data.status === 201) {
+          console.log(data);
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+        } else if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
             button: false,
             timer: 1500,
           });
@@ -227,11 +281,12 @@ function Post() {
                     <div className="increment-input flex space-x-3 overflow-hidden">
                       <span>
                         <button
-                          className="bg-white m-2 p-1 px-3 font-normal rounded-md border-solid border-2 border-black"
+                          className="bg-white mr-2 p-2 font-normal rounded-md border-solid border-2 border-black"
                           onClick={handleDecrement}
                         >
-                          -
+                          <i className="font-extrabold fa-solid fa-minus"></i>
                         </button>
+
                         <input
                           type="text"
                           id="qty"
@@ -242,10 +297,10 @@ function Post() {
                           className="w-1/5 focus:outline-none active:outline-none text-center text-md font-normal"
                         />
                         <button
-                          className="bg-white m-2 p-1 px-3 font-normal rounded-md border-solid border-2 border-black"
+                          className="bg-white m-2 p-2 font-normal rounded-md border-solid border-2 border-black"
                           onClick={handleIncrement}
                         >
-                          +
+                          <i className="font-extrabold fa-solid fa-plus"></i>
                         </button>
                       </span>
                     </div>
@@ -272,7 +327,9 @@ function Post() {
                     </p>
                     <p className="mt-1">
                       Weight :{" "}
-                      <span className="font-normal">{[product.weight]} Kg</span>
+                      <span className="font-normal">
+                        {[product.weight]} {[product.unit]}
+                      </span>
                     </p>
                   </p>
                 </div>
@@ -287,11 +344,10 @@ function Post() {
               </div>
             </div>
           </div>
-          <div className="h-10"></div>
         </div>
       )}
       <div className="scrollups bg-white py-4 flex justify-end lg:justify-between items-center md:px-16">
-        <div className="md:flex lg:flex-row flex-col justify-center items-center hidden ">
+        <div className="md:flex md:flex-row md:w-1/2 md:justify-start md:items-center lg:flex-row flex-col justify-center items-center hidden ">
           <img
             src={`http://localhost:8000/${product.photo}`}
             alt=""
@@ -309,7 +365,7 @@ function Post() {
               Rp. {numberWithCommas(price * qty)}
             </div>
           </div>
-          <i className="fa-sharp fa-regular fa-heart"></i>
+
           {price ? (
             <button
               className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-md mx-4"
@@ -327,6 +383,18 @@ function Post() {
               Add to Cart
             </button>
           )}
+          <Checkbox
+            {...label}
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+            onClick={handleWish}
+            sx={{
+              color: pink[800],
+              "&.Mui-checked": {
+                color: pink[600],
+              },
+            }}
+          />
         </div>
       </div>
     </>

@@ -47,6 +47,12 @@ const ListBrand = () => {
       align: "center",
     },
     {
+      id: "image",
+      label: "Photo",
+      minWidth: 150,
+      align: "center",
+    },
+    {
       id: "status",
       label: "Status",
       minWidth: 170,
@@ -212,6 +218,14 @@ const ListBrand = () => {
                           <TableCell align="center">{userData.id}</TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
+                            <img
+                              src={`http://localhost:8000/${userData.photo}`}
+                              width="50%"
+                              height="50%"
+                              alt="photo"
+                            />
+                          </TableCell>
+                          <TableCell align="center">
                             {userData.status === 1 ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
@@ -247,7 +261,7 @@ const ListBrand = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -255,7 +269,7 @@ const ListBrand = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>
@@ -280,6 +294,14 @@ const ListBrand = () => {
                           <TableCell align="center">{userData.id}</TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
+                            <img
+                              src={`http://localhost:8000/${userData.photo}`}
+                              width="50%"
+                              height="50%"
+                              alt="photo"
+                            />
+                          </TableCell>
+                          <TableCell align="center">
                             {userData.status === 1 ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
@@ -315,7 +337,7 @@ const ListBrand = () => {
                                     className="bg-green-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenEdit(userData)}
                                   >
-                                    EDIT
+                                    <i className="fa-solid fa-pen-to-square"></i>
                                   </button>
 
                                   <button
@@ -323,7 +345,7 @@ const ListBrand = () => {
                                     className="bg-red-600 px-6 py-2 text-white rounded-sm"
                                     onClick={() => handleOpenDelete(userData)}
                                   >
-                                    DELETE
+                                    <i className="fa-solid fa-trash"></i>
                                   </button>
                                 </Stack>
                               </ButtonGroup>

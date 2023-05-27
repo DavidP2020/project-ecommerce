@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, CircularProgress, Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
+import { numberWithCommas } from "../../utils/comma";
 
-export default function ListCategory() {
+export default function Shopnow() {
   return (
     <div className="p-7 pt-4 text-2xl font-semibold flex-1">
       <section className="section-container">{Post()}</section>
@@ -16,6 +17,7 @@ function Post() {
   const [loading, setLoading] = useState([]);
   const itemsPerPage = 9;
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState([]);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -25,13 +27,14 @@ function Post() {
   const fetchItem = async () => {
     try {
       let isMountered = true;
-      let res = await axios.get("/api/all-category");
+      let res = await axios.get("/api/all-product");
 
       if (isMountered) {
         if (res.data.status === 200) {
-          setlistPost(res.data.category);
+          setlistPost(res.data.product);
+          setTotal(res.data.total);
           setLoading(false);
-          setPages(Math.ceil(res.data.category.length / itemsPerPage));
+          setPages(Math.ceil(res.data.product.length / itemsPerPage));
         }
       }
 
@@ -54,7 +57,7 @@ function Post() {
           <Box sx={{ display: "flex" }}>
             <div className="loading font-normal">
               <CircularProgress />
-              <div>Loading Category</div>
+              <div>Loading Items</div>
             </div>
           </Box>
         </div>
@@ -64,10 +67,10 @@ function Post() {
             <Link to="/" className="hover:underline">
               Home
             </Link>
-            {" > "} <span className="capitalize">Category</span>
+            {" > "} <span className="capitalize">Shop Now</span>
           </div>
           <h1 className="title-text text-black uppercase font-extrabold text-3xl">
-            Category
+            Shop Now
           </h1>
           <div className="flex lg:flex-row flex-wrap flex-col m-12 justify-center justify-items-center items-center gap-10 border">
             {listPost
@@ -75,28 +78,54 @@ function Post() {
               .map((data, i) => {
                 return (
                   <div key={i}>
-                    <div className="card">
-                      <div className="relative">
+                    {data.product_color ? (
+                      <div className="card">
                         <img
                           src={`http://localhost:8000/${data.photo}`}
                           alt="photo"
-                          width={350}
-                          height={350}
                           className="w-full h-96 object-cover"
                         />
-                        <div className="h-96 w-full bg-black colorCenter"></div>
-                        <Link to={`/category/${data.slug}`}>
-                          <button className="textCenter bg-black rounded-md text-white px-16 py-2 -mt-4 hover:opacity-70 w-3/4 border-solid border-white border-2">
-                            {data.name}
-                          </button>
-                        </Link>
                         <div className="p-5 flex-col gap-3">
-                          <h2 className="product-title text-center font-medium">
+                          <div className="flex flex-row justify-between items-center">
+                            <div className="font-normal text-xs">
+                              {data.category.name}
+                            </div>
+                            <div className="font-normal text-xs">
+                              {data.weight} Kg
+                            </div>
+                          </div>
+                          <div className="font-bold text-2xl my-2">
                             {data.name}
-                          </h2>
+                          </div>
+                          <div className="font-medium text-xs text-white my-3">
+                            <span className="bg-primary px-4 py-1 rounded-xl">
+                              {data.brand.name}
+                            </span>
+                          </div>
+
+                          <div className="font-extrabold text-xl mt-2 text-red-500">
+                            Rp. {numberWithCommas(data.product_color.price)}
+                          </div>
+                          <div className="text-gray-500 font-medium text-xs mt-2">
+                            {total} Item left
+                          </div>
+                          <div className="text-center mt-4">
+                            <Link
+                              to={`/category/${data.category.slug}/${data.slug}`}
+                            >
+                              <button
+                                className="text-black text-sm font-medium px-4 py-2 rounded-md mx-4 border-solid border-4"
+                                type="button"
+                              >
+                                View More
+                              </button>
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 );
               })}

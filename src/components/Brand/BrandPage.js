@@ -3,7 +3,7 @@ import axios from "axios";
 import { Box, CircularProgress, Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export default function ListCategory() {
+export default function BrandPage() {
   return (
     <div className="p-7 pt-4 text-2xl font-semibold flex-1">
       <section className="section-container">{Post()}</section>
@@ -25,13 +25,13 @@ function Post() {
   const fetchItem = async () => {
     try {
       let isMountered = true;
-      let res = await axios.get("/api/all-category");
+      let res = await axios.get("/api/all-brand");
 
       if (isMountered) {
         if (res.data.status === 200) {
-          setlistPost(res.data.category);
+          setlistPost(res.data.brand);
           setLoading(false);
-          setPages(Math.ceil(res.data.category.length / itemsPerPage));
+          setPages(Math.ceil(res.data.brand.length / itemsPerPage));
         }
       }
 
@@ -54,7 +54,7 @@ function Post() {
           <Box sx={{ display: "flex" }}>
             <div className="loading font-normal">
               <CircularProgress />
-              <div>Loading Category</div>
+              <div>Loading Brand</div>
             </div>
           </Box>
         </div>
@@ -64,10 +64,10 @@ function Post() {
             <Link to="/" className="hover:underline">
               Home
             </Link>
-            {" > "} <span className="capitalize">Category</span>
+            {" > "} <span className="capitalize">Brand</span>
           </div>
           <h1 className="title-text text-black uppercase font-extrabold text-3xl">
-            Category
+            Brand
           </h1>
           <div className="flex lg:flex-row flex-wrap flex-col m-12 justify-center justify-items-center items-center gap-10 border">
             {listPost
@@ -85,7 +85,7 @@ function Post() {
                           className="w-full h-96 object-cover"
                         />
                         <div className="h-96 w-full bg-black colorCenter"></div>
-                        <Link to={`/category/${data.slug}`}>
+                        <Link to={`/brands/${data.name}`}>
                           <button className="textCenter bg-black rounded-md text-white px-16 py-2 -mt-4 hover:opacity-70 w-3/4 border-solid border-white border-2">
                             {data.name}
                           </button>

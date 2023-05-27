@@ -3,7 +3,7 @@ import AdminCategory from "../components/ListCategory/Admin/AdminCategory";
 import ListCategory from "../components/ListCategory/ListCategory";
 
 export default function Category() {
-  const accessRole = sessionStorage.getItem("auth-role");
+  const accessRole = localStorage.getItem("auth-role");
   useEffect(() => {
     document.title = "Category";
   }, []);
