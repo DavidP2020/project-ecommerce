@@ -196,7 +196,8 @@ export default function Cart() {
                                   >
                                     <div className="flex flex-wrap mb-2">
                                       <div className="left-side w-full md:w-1/2 text-2xl font-bold">
-                                        {data.productName}
+                                        {data.productName} ({data.weight}{" "}
+                                        {data.unit})
                                       </div>
                                       <div className="right-side w-1/2 text-right font-bold mt-1 text-lg md:block hidden">
                                         Rp.

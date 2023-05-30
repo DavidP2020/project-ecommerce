@@ -24,6 +24,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import swal from "sweetalert";
+import OrderDetail from "../Modal/OrderDetail";
 const ListOrder = () => {
   const columns = [
     {
@@ -113,6 +114,7 @@ const ListOrder = () => {
         if (resp.data.status === 200) {
           setListOrder(resp.data.order);
           setListDetail(resp.data.orderDetail);
+          console.log(resp.data.orderDetail);
         } else if (resp.data.status === 401) {
           swal({
             title: "Error!",
@@ -471,7 +473,6 @@ const ListOrder = () => {
                                                     <div className="mt-6 text-sm">
                                                       Transaction History :{" "}
                                                     </div>
-                                                    <div>A</div>
                                                   </div>
                                                 </div>
                                                 <div>
@@ -495,6 +496,9 @@ const ListOrder = () => {
                                                     )}
                                                   </div>
                                                 </div>
+                                              </div>
+                                              <div>
+                                                <OrderDetail data={id} />
                                               </div>
 
                                               <div className="mt-4">

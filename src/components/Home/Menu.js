@@ -5,7 +5,7 @@ export const AdminPages = [
   { name: "Product", link: "/product" },
   { name: "Brand", link: "/brand" },
   { name: "Color", link: "/color" },
-  { name: "Manage User", link: "/listUser" },
+  { name: "Manage User", link: "/manage-user" },
 ];
 
 export const userPages = [

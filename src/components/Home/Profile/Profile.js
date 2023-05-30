@@ -12,7 +12,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import swal from "sweetalert";
 
-export default function Profile({ data, handleClose, fetchItem, ...props }) {
+export default function Profile({
+  data,
+  handleClose,
+  fetchItem,
+  ctr,
+  ...props
+}) {
   const [state, setState] = useState({
     name: data.name,
     gender: data.gender,
@@ -84,7 +90,10 @@ export default function Profile({ data, handleClose, fetchItem, ...props }) {
             });
             setError("");
             fetchItem();
-            localStorage.setItem("auth-name", state.name);
+
+            if (ctr === "user") {
+              localStorage.setItem("auth-name", state.name);
+            }
             handleClose();
           } else if (res.data.status === 403) {
             setError(res.data.message);

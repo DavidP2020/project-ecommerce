@@ -10,11 +10,18 @@ const TotalPrice = ({ total, action, handleInput, ...props }) => {
     return result + item.product_qty * item.price;
   }, 0);
 
+  const totalDetail = total.reduce(function (result, item) {
+    return result + item.qty * item.price;
+  }, 0);
+
   return (
     <>
       <div className="flex flex-col justify-end items-end text-lg">
-        <h4>Total Price : Rp. {numberWithCommas(totalBayar)}</h4>
-
+        {action === "orderDetail" ? (
+          <h4>Total Price : Rp. {numberWithCommas(totalDetail)}</h4>
+        ) : (
+          <h4>Total Price : Rp. {numberWithCommas(totalBayar)}</h4>
+        )}
         {action === "order" ? (
           <div className="text-center mt-2">
             <ButtonGroup variant="text" aria-label="text button group">
@@ -36,6 +43,8 @@ const TotalPrice = ({ total, action, handleInput, ...props }) => {
               </Stack>
             </ButtonGroup>
           </div>
+        ) : action === "orderDetail" ? (
+          ""
         ) : (
           <div className="text-center">
             <Link to="/checkout" className="hover:underline">

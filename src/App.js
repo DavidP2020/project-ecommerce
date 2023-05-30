@@ -27,6 +27,7 @@ import Shopnow from "./components/Product/Shopnow";
 import BrandPage from "./components/Brand/BrandPage";
 import BrandProduct from "./components/Brand/BrandProduct";
 import Wishlist from "./pages/Wishlist";
+import User from "./pages/User";
 function App() {
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/shop-now" element={<Shopnow />} />
               <Route path="/about-us" element={<Aboutus />} />
+              <Route path="/manage-user" element={<User />} />
               <Route path="/category" element={<Category />} />
               <Route path="/category/:slug" element={<ListProduct />} />
               <Route

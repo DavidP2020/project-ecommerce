@@ -33,27 +33,46 @@ const style = {
 export default function Checkout() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState([]);
-  const [qty, setQty] = useState(1);
   const [error, setError] = useState();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const PayPalButton = window.paypal.Buttons.driver("react", {
-    React,
-    ReactDOM,
-  });
-  const [state, setState] = useState({
-    name: "",
-    phoneNum: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
+  const PayPalButton = "";
+  //   window.paypal.Buttons.driver("react", {
+  //     React,
+  //     ReactDOM,
+  //   });
+  const accessEmail = localStorage.getItem("auth-email");
+  const accessRole = localStorage.getItem("auth-role");
 
-  const handleInputChange = (e) => {
-    let { name, value } = e.target;
-    setState({ ...state, [name]: value });
+  const [name, setName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [zip, setZip] = useState("");
+  const [status, setStatus] = useState("");
+  const fetchData = () => {
+    try {
+      axios.get(`/api/profile/${accessEmail}`).then((resp) => {
+        if (resp.data.status === 200) {
+          if (accessRole === "USER") {
+            setName(resp.data.user.name);
+            setPhoneNum(resp.data.user.phoneNum);
+            setEmail(resp.data.user.email);
+            setAddress(resp.data.user.address);
+            setState(resp.data.user.state);
+            setCity(resp.data.user.city);
+            setZip(resp.data.user.zip);
+            setStatus(0);
+          } else if (accessRole === "ADMIN") {
+            setStatus(1);
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   const fetchItem = async () => {
     try {
@@ -114,15 +133,16 @@ export default function Checkout() {
     e.preventDefault();
 
     const formData = {
-      name: state.name,
-      phoneNum: state.phoneNum,
-      email: state.email,
-      address: state.address,
-      city: state.city,
-      state: state.state,
-      zip: state.zip,
+      name: name,
+      phoneNum: phoneNum,
+      email: email,
+      address: address,
+      city: city,
+      state: state,
+      zip: zip,
       payment_mode: payment,
       payment_id: "",
+      status: status,
     };
     setLoading(false);
     console.log(payment);
@@ -220,6 +240,7 @@ export default function Checkout() {
   const handleClose = () => setOpen(false);
   useEffect(() => {
     fetchItem();
+    fetchData();
     document.title = "Checkout";
   }, []);
   return (
@@ -262,9 +283,9 @@ export default function Checkout() {
                     id="name"
                     name="name"
                     label="Name"
-                    value={state.name}
+                    value={name}
                     type="text"
-                    onChange={handleInputChange}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
                 <div className="flex flex-row">
@@ -274,9 +295,9 @@ export default function Checkout() {
                       id="phoneNum"
                       name="phoneNum"
                       label="Phone Number"
-                      value={state.phoneNum}
+                      value={phoneNum}
                       type="text"
-                      onChange={handleInputChange}
+                      onChange={(e) => setPhoneNum(e.target.value)}
                     />
                   </div>
                   <div className="flexInput ml-4">
@@ -285,30 +306,30 @@ export default function Checkout() {
                       id="email"
                       name="email"
                       label="Email"
-                      value={state.email}
+                      value={email}
                       type="text"
-                      onChange={handleInputChange}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                 </div>
-                <div className="flexInput">
+                <div classNam e="flexInput">
                   <textarea
                     className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none text-sm font-medium"
                     placeholder="Address"
                     id="address"
                     name="address"
-                    value={state.address}
-                    onChange={handleInputChange}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   ></textarea>
                   <div className="text-right mx-4 text-xs font-semibold">
-                    {state.address.length <= 5000 ? (
+                    {address.length <= 5000 ? (
                       <>
-                        {state.address.length}
+                        {address.length}
                         <span> / 5000</span>
                       </>
                     ) : (
                       <div className="text-red-600">
-                        {state.address.length}{" "}
+                        {address.length}{" "}
                         <span className="text-black"> / 5000</span>
                       </div>
                     )}
@@ -321,9 +342,9 @@ export default function Checkout() {
                       id="city"
                       name="city"
                       label="City"
-                      value={state.city}
+                      value={city}
                       type="text"
-                      onChange={handleInputChange}
+                      onChange={(e) => setCity(e.target.value)}
                     />
                   </div>
                   <div className="flexInput ml-4">
@@ -332,9 +353,9 @@ export default function Checkout() {
                       id="state"
                       name="state"
                       label="State"
-                      value={state.state}
+                      value={state}
                       type="text"
-                      onChange={handleInputChange}
+                      onChange={(e) => setState(e.target.value)}
                     />
                   </div>
                   <div className="flexInput ml-4">
@@ -343,9 +364,9 @@ export default function Checkout() {
                       id="zip"
                       name="zip"
                       label="Zip Code"
-                      value={state.zip}
+                      value={zip}
                       type="text"
-                      onChange={handleInputChange}
+                      onChange={(e) => setZip(e.target.value)}
                     />
                   </div>
                 </div>
@@ -392,7 +413,8 @@ export default function Checkout() {
                                         >
                                           <div className="flex flex-wrap mb-2">
                                             <div className="left-side w-full md:w-1/2 text-2xl font-bold">
-                                              {data.productName}
+                                              {data.productName} ({data.weight}{" "}
+                                              {data.unit})
                                             </div>
                                             <div className="right-side w-1/2 text-right font-bold mt-1 text-lg md:block hidden">
                                               Rp.

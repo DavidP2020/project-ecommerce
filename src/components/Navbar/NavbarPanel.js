@@ -9,6 +9,7 @@ import ItemNavbarContainer from "./ItemNavbarContainer";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Profile from "../Home/Profile/Profile";
 import axios from "axios";
+import ChangePassword from "../Setting/ChangePassword";
 
 export default function NavbarPanel() {
   const style = {
@@ -33,10 +34,17 @@ export default function NavbarPanel() {
 
   const [id, setId] = useState();
   const [openEdit, setOpenEdit] = useState(false);
+  const [openChange, setOpenChange] = useState(false);
   const handleOpenLogout = () => {
     setOpenLogout(true);
   };
   const handleCloseLogout = () => setOpenLogout(false);
+
+  const handleOpenChange = () => {
+    setOpenChange(true);
+  };
+  const handleCloseChange = () => setOpenChange(false);
+
   const handleOpenEdit = () => {
     setOpenEdit(true);
   };
@@ -93,7 +101,7 @@ export default function NavbarPanel() {
           <div className="flex justify-end items-start w-full">
             <ul className="text-xs font-medium flex gap-5 pb-4">
               <li>
-                <Link to="/help" className="hover:underline">
+                <Link to="/order  " className="hover:underline">
                   Order Status
                 </Link>
               </li>
@@ -131,26 +139,21 @@ export default function NavbarPanel() {
             <div className="flex flex-col">
               <div className="flex gap-9">
                 <ul className="text-sm font-medium flex gap-2">
-                  {accessRole === "USER" ? (
-                    <>
-                      <li>
-                        <Link to="/wishlist">
-                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                            <FavoriteIcon />
-                          </i>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/cart">
-                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                            <ShoppingCartCheckoutIcon />
-                          </i>
-                        </Link>
-                      </li>
-                    </>
-                  ) : (
-                    ""
-                  )}
+                  <li>
+                    <Link to="/wishlist">
+                      <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                        <FavoriteIcon />
+                      </i>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/cart">
+                      <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                        <ShoppingCartCheckoutIcon />
+                      </i>
+                    </Link>
+                  </li>
+
                   {accessToken ? (
                     <li>
                       <i
@@ -224,6 +227,7 @@ export default function NavbarPanel() {
                               data={profile}
                               handleClose={handleCloseEdit}
                               fetchItem={fetchItem}
+                              ctr="user"
                             />
                           </Typography>
                         </Box>
@@ -238,6 +242,55 @@ export default function NavbarPanel() {
                         About
                       </button>
                     </div>
+                    <div className="popOver">
+                      <button
+                        className="nav-links-sign"
+                        onClick={() => handleOpenChange()}
+                      >
+                        <i
+                          className="mr-6 m-2 fas fa-solid fa-right-from-bracket"
+                          aria-hidden="true"
+                        ></i>
+                        Ganti Password
+                      </button>
+                    </div>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={openChange}
+                      onClose={handleCloseChange}
+                      closeAfterTransition
+                      component={"div"}
+                    >
+                      <Fade in={openChange}>
+                        <Box
+                          sx={style}
+                          style={{ background: "white" }}
+                          component={"div"}
+                        >
+                          <Toolbar style={{ marginLeft: "-1rem" }}>
+                            <Typography component="div" sx={{ flexGrow: 2 }}>
+                              <b className="text-xl">Ganti Password</b>
+                            </Typography>
+                            <i
+                              className="icon fa fa-times"
+                              aria-hidden="true"
+                              onClick={handleCloseChange}
+                            ></i>
+                          </Toolbar>
+                          <Typography
+                            id="transition-modal-description"
+                            sx={{ mt: 2 }}
+                            component={"div"}
+                          >
+                            <ChangePassword
+                              data={profile.id}
+                              handleClose={handleCloseChange}
+                            />
+                          </Typography>
+                        </Box>
+                      </Fade>
+                    </Modal>
                     <div className="popOver">
                       <button
                         className="nav-links-sign"
