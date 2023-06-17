@@ -135,7 +135,7 @@ const ListColor = () => {
     }
   };
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listColor.filter((rowsPerPage) => {
         return rowsPerPage.name

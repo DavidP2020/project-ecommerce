@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonGroup,
   CircularProgress,
   Fade,
@@ -109,7 +108,6 @@ const AdminProduct = () => {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [openDetail, setOpenDetail] = useState(false);
   const [openDesc, setOpenDesc] = useState(false);
   const [searched, setSearched] = useState();
   const [value, setValue] = useState("");
@@ -118,7 +116,6 @@ const AdminProduct = () => {
   const handleOpenCreate = () => {
     setOpen(true);
   };
-  //function untuk tutup  pop up
   const handleCloseCreate = () => setOpen(false);
 
   const handleOpenDesc = (id) => {
@@ -140,13 +137,6 @@ const AdminProduct = () => {
   };
 
   const handleCloseDelete = () => setOpenDelete(false);
-
-  const handleOpenDetail = (id) => {
-    console.log(id);
-    setId(id);
-    setOpenDetail(true);
-  };
-  const handleCloseDetail = () => setOpenDetail(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -171,7 +161,7 @@ const AdminProduct = () => {
     }
   };
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listProduct.filter((rowsPerPage) => {
         return rowsPerPage.name

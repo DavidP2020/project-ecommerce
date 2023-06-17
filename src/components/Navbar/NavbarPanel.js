@@ -28,11 +28,8 @@ export default function NavbarPanel() {
   const [openLogout, setOpenLogout] = useState(false);
   const accessToken = localStorage.getItem("auth-token");
   const username = localStorage.getItem("auth-name");
-  const accessRole = localStorage.getItem("auth-role");
   const accessEmail = localStorage.getItem("auth-email");
   const [profile, setProfile] = useState([]);
-
-  const [id, setId] = useState();
   const [openEdit, setOpenEdit] = useState(false);
   const [openChange, setOpenChange] = useState(false);
   const handleOpenLogout = () => {
@@ -248,7 +245,7 @@ export default function NavbarPanel() {
                         onClick={() => handleOpenChange()}
                       >
                         <i
-                          className="mr-6 m-2 fas fa-solid fa-right-from-bracket"
+                          className="mr-6 m-2 fas fa-regular fa-lock"
                           aria-hidden="true"
                         ></i>
                         Ganti Password

@@ -29,16 +29,16 @@ const TotalPrice = ({ total, action, handleInput, ...props }) => {
                 <button
                   variant="contained"
                   className="bg-black px-10 py-2 mt text-white rounded-sm text-xs hover:opacity-70"
-                  onClick={(e) => handleInput(e, "COD")}
+                  onClick={(e) => handleInput(e, "COD", totalBayar)}
                 >
                   Order Now
                 </button>
                 <button
                   variant="contained"
                   className="bg-black px-10 py-2 mt text-white rounded-sm text-xs hover:opacity-70"
-                  onClick={(e) => handleInput(e, "Paypal")}
+                  onClick={(e) => handleInput(e, "Online", totalBayar)}
                 >
-                  Paypal
+                  Online Payment
                 </button>
               </Stack>
             </ButtonGroup>

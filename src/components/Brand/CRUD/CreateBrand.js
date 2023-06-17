@@ -84,10 +84,12 @@ export default function CreateBrand({ handleClose, fetchItem, ...props }) {
       >
         {error ? (
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
-            <ul>
-              <li>{error.name}</li>
-              <li>{error.photo}</li>
-            </ul>
+            {error && (
+              <ul>
+                <li>{error.name}</li>
+                <li>{error.photo}</li>
+              </ul>
+            )}
           </div>
         ) : (
           ""

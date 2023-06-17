@@ -1,11 +1,8 @@
 import React from "react";
 import { Button } from "@mui/material";
 import { Box } from "@mui/system";
-import swal from "sweetalert";
-import axios from "axios";
 
 export default function Detail({ data, handleClose, ...props }) {
-  console.log(data);
   return (
     <div>
       <Box

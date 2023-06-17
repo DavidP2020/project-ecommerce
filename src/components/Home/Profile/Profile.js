@@ -4,8 +4,6 @@ import {
   Button,
   CircularProgress,
   MenuItem,
-  Tab,
-  Tabs,
   TextField,
 } from "@mui/material";
 import axios from "axios";
@@ -96,7 +94,8 @@ export default function Profile({
             }
             handleClose();
           } else if (res.data.status === 403) {
-            setError(res.data.message);
+            setError(res.data.validation_errors);
+            console.log(res.data.validation_errors);
             setLoading(false);
           }
         });
@@ -117,16 +116,19 @@ export default function Profile({
       >
         {error ? (
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
-            <li>{error.name}</li>
-            <li>{error.gender}</li>
-            <li>{error.photo}</li>
-            <li>{error.phoneNum}</li>
-            <li>{error.date_of_birth}</li>
-            <li>{error.place_of_birth}</li>
-            <li>{error.address}</li>
-            <li>{error.state}</li>
-            <li>{error.city}</li>
-            <li>{error.zip}</li>
+            {error && (
+              <ul>
+                <li>{error.name}</li>
+                <li>{error.gender}</li>
+                <li>{error.phoneNum}</li>
+                <li>{error.date_of_birth}</li>
+                <li>{error.place_of_birth}</li>
+                <li>{error.address}</li>
+                <li>{error.state}</li>
+                <li>{error.city}</li>
+                <li>{error.zip}</li>
+              </ul>
+            )}
           </div>
         ) : (
           ""

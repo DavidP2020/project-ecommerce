@@ -1,13 +1,10 @@
 import {
   Box,
   CircularProgress,
-  Fade,
   List,
   ListItem,
   ListItemText,
-  Modal,
   TextField,
-  Toolbar,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -17,30 +14,13 @@ import TotalPrice from "./TotalPrice";
 import axios from "axios";
 import swal from "sweetalert";
 import { useEffect } from "react";
-import ReactDOM from "react-dom";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "90%",
-  bgcolor: "white",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 export default function Checkout() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState([]);
   const [error, setError] = useState();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const PayPalButton = "";
-  //   window.paypal.Buttons.driver("react", {
-  //     React,
-  //     ReactDOM,
-  //   });
+  const username = localStorage.getItem("auth-name");
   const accessEmail = localStorage.getItem("auth-email");
   const accessRole = localStorage.getItem("auth-role");
 
@@ -64,9 +44,9 @@ export default function Checkout() {
             setState(resp.data.user.state);
             setCity(resp.data.user.city);
             setZip(resp.data.user.zip);
-            setStatus(0);
+            setStatus("Unpaid");
           } else if (accessRole === "ADMIN") {
-            setStatus(1);
+            setStatus("Paid");
           }
         }
       });
@@ -96,40 +76,8 @@ export default function Checkout() {
       console.log(error);
     }
   };
-  const createOrder = (data) => {
-    // Order is created on the server and the order id is returned
-    return fetch("/my-server/create-paypal-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // use the "body" param to optionally pass additional order information
-      // like product skus and quantities
-      body: JSON.stringify({
-        cart: [
-          {
-            sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
-            quantity: "YOUR_PRODUCT_QUANTITY",
-          },
-        ],
-      }),
-    })
-      .then((response) => response.json())
-      .then((order) => order.id);
-  };
-  const onApprove = (data) => {
-    // Order is captured on the server and the response is returned to the browser
-    return fetch("/my-server/capture-paypal-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        orderID: data.orderID,
-      }),
-    }).then((response) => response.json());
-  };
-  const handleInput = async (e, payment) => {
+
+  const handleInput = async (e, payment, total) => {
     e.preventDefault();
 
     const formData = {
@@ -141,11 +89,11 @@ export default function Checkout() {
       state: state,
       zip: zip,
       payment_mode: payment,
+      gross_amount: total,
       payment_id: "",
       status: status,
     };
     setLoading(false);
-    console.log(payment);
     switch (payment) {
       case "COD":
         try {
@@ -166,11 +114,11 @@ export default function Checkout() {
                 });
                 setError("");
                 fetchItem();
-                navigate("/cart");
+                navigate("/order");
               } else if (res.data.status === 401) {
                 swal({
                   title: "Login for Checkout",
-                  text: res.data.validati,
+                  text: res.data.message,
                   icon: "error",
                   button: false,
                   timer: 1500,
@@ -193,22 +141,235 @@ export default function Checkout() {
           alert(err.message);
         }
         break;
-      case "Paypal":
+      case "Online":
         try {
           axios
-            .post("/api/validate-order", formData, {
+            .post("/api/payment", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
             })
             .then((res) => {
               if (res.data.status === 200) {
-                handleOpen();
+                <script type="text/javascript">
+                  var payButton = document.getElementById('pay-button');
+                  payButton.addEventListener('click', function (){" "}
+                  {
+                    // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+                    window.snap.pay(res.data.snapToken, {
+                      onSuccess: function (result) {
+                        /* You may add your own implementation here */
+                        console.log(result);
+                        const formDataPayment = {
+                          name: name,
+                          phoneNum: phoneNum,
+                          email: email,
+                          address: address,
+                          city: city,
+                          state: state,
+                          zip: zip,
+                          transaction_id: result.transaction_id,
+                          order_id: result.order_id,
+                          payment_mode: result.payment_type,
+                          payment_code: result.bca_va_number,
+                          gross_amount: result.gross_amount,
+                          paidBy: username,
+                          status: result.transaction_status,
+                        };
+                        try {
+                          axios
+                            .post("/api/place-order", formDataPayment, {
+                              headers: {
+                                "Content-Type": "multipart/form-data",
+                              },
+                            })
+                            .then((res) => {
+                              if (res.data.status === 200) {
+                                swal({
+                                  title: "Order Placed Successfull!",
+                                  text: result.status_message,
+                                  icon: "success",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setError("");
+                                navigate("/order");
+                                fetchItem();
+                              } else if (res.data.status === 401) {
+                                swal({
+                                  title: "Login for Checkout",
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+
+                                setLoading(false);
+                              } else if (res.data.status === 422) {
+                                swal({
+                                  title: "All fields are mandatory!",
+                                  text: "Please Fill All fields",
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setError(res.data.validation_errors);
+                                setLoading(false);
+                              }
+                            });
+                        } catch (err) {
+                          alert(err.message);
+                        }
+                        console.log("c", result);
+                      },
+                      onPending: function (result) {
+                        /* You may add your own implementation here */
+                        const formDataPayment = {
+                          name: name,
+                          phoneNum: phoneNum,
+                          email: email,
+                          address: address,
+                          city: city,
+                          state: state,
+                          zip: zip,
+                          transaction_id: result.transaction_id,
+                          order_id: result.order_id,
+                          payment_mode: result.payment_type,
+                          payment_code: result.payment_code,
+                          gross_amount: result.gross_amount,
+                          status: result.transaction_status,
+                        };
+                        try {
+                          axios
+                            .post("/api/place-order", formDataPayment, {
+                              headers: {
+                                "Content-Type": "multipart/form-data",
+                              },
+                            })
+                            .then((res) => {
+                              if (res.data.status === 200) {
+                                swal({
+                                  title: "Menunggu Pembayaran",
+                                  text: result.status_message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 2500,
+                                });
+                                setError("");
+                                navigate("/order");
+                                fetchItem();
+                              } else if (res.data.status === 401) {
+                                swal({
+                                  title: "Login for Checkout",
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+
+                                setLoading(false);
+                              } else if (res.data.status === 422) {
+                                swal({
+                                  title: "All fields are mandatory!",
+                                  text: "Please Fill All fields",
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setError(res.data.validation_errors);
+                                setLoading(false);
+                              }
+                            });
+                        } catch (err) {
+                          alert(err.message);
+                        }
+
+                        console.log("b", result);
+                      },
+                      onError: function (result) {
+                        /* You may add your own implementation here */
+                        const formDataPayment = {
+                          name: name,
+                          phoneNum: phoneNum,
+                          email: email,
+                          address: address,
+                          city: city,
+                          state: state,
+                          zip: zip,
+                          transaction_id: result.transaction_id,
+                          order_id: result.order_id,
+                          payment_mode: result.payment_type,
+                          payment_code: result.payment_code,
+                          gross_amount: result.gross_amount,
+                          status: result.transaction_status,
+                        };
+                        try {
+                          axios
+                            .post("/api/place-order", formDataPayment, {
+                              headers: {
+                                "Content-Type": "multipart/form-data",
+                              },
+                            })
+                            .then((res) => {
+                              if (res.data.status === 200) {
+                                swal({
+                                  title: "Pembayaran Gagal",
+                                  text: result.status_message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 2500,
+                                });
+                                setError("");
+                                navigate("/order");
+                                fetchItem();
+                              } else if (res.data.status === 401) {
+                                swal({
+                                  title: "Login for Checkout",
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+
+                                setLoading(false);
+                              } else if (res.data.status === 422) {
+                                swal({
+                                  title: "All fields are mandatory!",
+                                  text: "Please Fill All fields",
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setError(res.data.validation_errors);
+                                setLoading(false);
+                              }
+                            });
+                        } catch (err) {
+                          alert(err.message);
+                        }
+
+                        console.log("a", result);
+                      },
+                      onClose: function () {
+                        /* You may add your own implementation here */
+                        swal({
+                          title:
+                            "Kamu Menutup Popup Tanpa Menuelesaikan Pembayaran",
+                          text: "You closed the popup without finishing the payment",
+                          icon: "error",
+                          button: false,
+                          timer: 2500,
+                        });
+                      },
+                    })
+                  }
+                  );
+                </script>;
                 setError("");
               } else if (res.data.status === 401) {
                 swal({
                   title: "Login for Checkout",
-                  text: res.data.validati,
+                  text: res.data.message,
                   icon: "error",
                   button: false,
                   timer: 1500,
@@ -233,11 +394,6 @@ export default function Checkout() {
         break;
     }
   };
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => setOpen(false);
   useEffect(() => {
     fetchItem();
     fetchData();
@@ -492,40 +648,6 @@ export default function Checkout() {
           )}
         </>
       </div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        className="overflow-scroll h-11/12"
-      >
-        <Fade in={open}>
-          <Box sx={style} style={{ background: "white" }} component={"div"}>
-            <Toolbar style={{ marginLeft: "-1rem" }}>
-              <Typography component="div" sx={{ flexGrow: 2 }}>
-                <b className="text-xl">Online Payment</b>
-              </Typography>
-              <i
-                className="icon fa fa-times"
-                aria-hidden="true"
-                onClick={handleClose}
-              ></i>
-            </Toolbar>
-            <Typography
-              id="transition-modal-description"
-              sx={{ mt: 2 }}
-              component={"div"}
-              className="text-center"
-            >
-              <PayPalButton
-                createOrder={(data) => createOrder(data)}
-                onApprove={(data) => onApprove(data)}
-              />
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
     </>
   );
 }

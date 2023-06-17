@@ -24,7 +24,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import swal from "sweetalert";
-import OrderDetail from "../Modal/OrderDetail";
+import DetailOrderList from "../Modal/DetailOrderList";
 const ListOrder = () => {
   const columns = [
     {
@@ -34,8 +34,14 @@ const ListOrder = () => {
       align: "center",
     },
     {
-      id: "tracking",
-      label: "Tracking No",
+      id: "order",
+      label: "Order Id",
+      minWidth: 170,
+      align: "center",
+    },
+    {
+      id: "Transaction",
+      label: "Transaction Id",
       minWidth: 170,
       align: "center",
     },
@@ -85,12 +91,12 @@ const ListOrder = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [listOrder, setListOrder] = useState([]);
-  const [listDetail, setListDetail] = useState([]);
+  const [value, setValue] = useState("");
+  const [isLoading, setLoading] = useState(true);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const [searched, setSearched] = useState();
-  const [value, setValue] = useState("");
-  const [isLoading, setLoading] = useState(true);
+  const userId = localStorage.getItem("auth-id");
   const navigate = useNavigate();
 
   const handleOpen = (id) => {
@@ -107,14 +113,11 @@ const ListOrder = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const fetchItem = () => {
     try {
-      axios.get("/api/admin-order").then((resp) => {
+      axios.get(`/api/admin-order/${userId}`).then((resp) => {
         if (resp.data.status === 200) {
           setListOrder(resp.data.order);
-          setListDetail(resp.data.orderDetail);
-          console.log(resp.data.orderDetail);
         } else if (resp.data.status === 401) {
           swal({
             title: "Error!",
@@ -131,8 +134,9 @@ const ListOrder = () => {
       console.log(error);
     }
   };
+
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listOrder.filter((rowsPerPage) => {
         return rowsPerPage.name
@@ -211,7 +215,10 @@ const ListOrder = () => {
                         >
                           <TableCell align="center">{i + 1}</TableCell>
                           <TableCell align="center">
-                            {userData.tracking_no}
+                            {userData.order_id}
+                          </TableCell>
+                          <TableCell align="center">
+                            {userData.transaction_id}
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">{userData.email}</TableCell>
@@ -219,10 +226,29 @@ const ListOrder = () => {
                             {userData.phoneNum}
                           </TableCell>
                           <TableCell align="center">
-                            {userData.status === 1 ? (
+                            {userData.status === "Paid" ||
+                            userData.status === "settlement" ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Paid
+                                </button>
+                              </div>
+                            ) : userData.status === "pending" ? (
+                              <div>
+                                <button className="bg-yellow-500 text-white p-2 rounded-md">
+                                  Pending
+                                </button>
+                              </div>
+                            ) : userData.status === "error" ? (
+                              <div>
+                                <button className="bg-orange-500 text-white p-2 rounded-md">
+                                  Error
+                                </button>
+                              </div>
+                            ) : userData.status === "Cancel" ? (
+                              <div>
+                                <button className="bg-red-700 text-white p-2 rounded-md">
+                                  Cancel
                                 </button>
                               </div>
                             ) : (
@@ -235,6 +261,7 @@ const ListOrder = () => {
                           </TableCell>{" "}
                           <TableCell align="center">
                             <Box
+                              component={"div"}
                               sx={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -258,7 +285,7 @@ const ListOrder = () => {
                                   </button>
                                 </Stack>
                               </ButtonGroup>
-                            </Box>{" "}
+                            </Box>
                             <Modal
                               aria-labelledby="transition-modal-title"
                               aria-describedby="transition-modal-description"
@@ -341,7 +368,10 @@ const ListOrder = () => {
                         >
                           <TableCell align="center">{i + 1}</TableCell>
                           <TableCell align="center">
-                            {userData.tracking_no}
+                            {userData.order_id}
+                          </TableCell>
+                          <TableCell align="center">
+                            {userData.transaction_id}
                           </TableCell>
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">{userData.email}</TableCell>
@@ -349,10 +379,29 @@ const ListOrder = () => {
                             {userData.phoneNum}
                           </TableCell>
                           <TableCell align="center">
-                            {userData.status === 1 ? (
+                            {userData.status === "Paid" ||
+                            userData.status === "settlement" ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Paid
+                                </button>
+                              </div>
+                            ) : userData.status === "pending" ? (
+                              <div>
+                                <button className="bg-yellow-500 text-white p-2 rounded-md">
+                                  Pending
+                                </button>
+                              </div>
+                            ) : userData.status === "error" ? (
+                              <div>
+                                <button className="bg-orange-500 text-white p-2 rounded-md">
+                                  Error
+                                </button>
+                              </div>
+                            ) : userData.status === "Cancel" ? (
+                              <div>
+                                <button className="bg-red-700 text-white p-2 rounded-md">
+                                  Cancel
                                 </button>
                               </div>
                             ) : (
@@ -389,152 +438,6 @@ const ListOrder = () => {
                                 </Stack>
                               </ButtonGroup>
                             </Box>{" "}
-                            <Modal
-                              aria-labelledby="transition-modal-title"
-                              aria-describedby="transition-modal-description"
-                              open={open}
-                              onClose={handleClose}
-                              closeAfterTransition
-                              className="overflow-scroll h-11/12"
-                            >
-                              <Fade in={open}>
-                                <Box
-                                  sx={style}
-                                  style={{ background: "white" }}
-                                  component={"div"}
-                                >
-                                  <Toolbar style={{ marginLeft: "-1rem" }}>
-                                    <Typography
-                                      component="div"
-                                      sx={{ flexGrow: 2 }}
-                                    >
-                                      <b className="text-xl">Detail Order</b>
-                                    </Typography>
-                                    <i
-                                      className="icon fa fa-times"
-                                      aria-hidden="true"
-                                      onClick={handleClose}
-                                    ></i>
-                                  </Toolbar>
-                                  <Typography
-                                    id="transition-modal-description"
-                                    sx={{ mt: 2 }}
-                                    component={"div"}
-                                  >
-                                    <div>
-                                      <Box
-                                        sx={{
-                                          "& .MuiTextField-root": {
-                                            m: 1,
-                                            width: "36ch",
-                                          },
-                                        }}
-                                        component={"div"}
-                                      >
-                                        <div className="flex justify-center items-center">
-                                          <div className="flex border-2 border-black w-3/4">
-                                            <div className="my-6 mx-4 font-bold text-xs w-full">
-                                              <div className="flex justify-between">
-                                                <div>
-                                                  <div className="mb-2">
-                                                    Name :{" "}
-                                                    <span className="uppercase">
-                                                      {userData.name}
-                                                    </span>
-                                                  </div>
-                                                  <div className="mb-2">
-                                                    Email :{" "}
-                                                    {userData.created_at}
-                                                  </div>
-                                                  <div className="mb-2">
-                                                    Phone : {userData.phoneNum}
-                                                  </div>
-                                                </div>
-                                                <div>
-                                                  <div className="mb-2">
-                                                    Tracking No :{" "}
-                                                    {userData.tracking_no}
-                                                  </div>
-                                                  <div className="mb-2">
-                                                    Date : {userData.created_at}
-                                                  </div>
-                                                </div>
-                                              </div>
-
-                                              <div className="flex justify-between mt-8">
-                                                <div>
-                                                  <div>
-                                                    Payment ID :{" "}
-                                                    {userData.payment_id
-                                                      ? userData.payment_id
-                                                      : "-"}
-                                                  </div>
-                                                  <div>
-                                                    <div className="mt-6 text-sm">
-                                                      Transaction History :{" "}
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                                <div>
-                                                  <div>
-                                                    Payment Mode :{" "}
-                                                    {userData.payment_mode}
-                                                  </div>
-                                                  <div className="text-right mt-4">
-                                                    {userData.status === 1 ? (
-                                                      <div>
-                                                        <button className="bg-green-500 text-white p-2 rounded-md">
-                                                          Paid
-                                                        </button>
-                                                      </div>
-                                                    ) : (
-                                                      <div>
-                                                        <button className="bg-red-500 text-white p-2 rounded-md">
-                                                          Unpaid
-                                                        </button>
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                </div>
-                                              </div>
-                                              <div>
-                                                <OrderDetail data={id} />
-                                              </div>
-
-                                              <div className="mt-4">
-                                                <div>
-                                                  City : {userData.city}
-                                                </div>
-                                                <div>
-                                                  State : {userData.state}
-                                                </div>
-                                                <div>Zip : {userData.zip}</div>
-                                                <div>
-                                                  Address : {userData.address}
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div style={{ textAlign: "right" }}>
-                                          <Button
-                                            style={{
-                                              margin: "5px",
-                                              color: "black",
-                                              border: "1px solid",
-                                              borderRadius: "5px",
-                                            }}
-                                            onClick={handleClose}
-                                          >
-                                            Cancel
-                                          </Button>
-                                        </div>
-                                      </Box>
-                                    </div>
-                                  </Typography>
-                                </Box>
-                              </Fade>
-                            </Modal>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -552,6 +455,40 @@ const ListOrder = () => {
           />
         </Paper>
       )}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        className="overflow-scroll h-11/12"
+      >
+        <Fade in={open}>
+          <Box sx={style} style={{ background: "white" }} component={"div"}>
+            <Toolbar style={{ marginLeft: "-1rem" }}>
+              <Typography component="div" sx={{ flexGrow: 2 }}>
+                <b className="text-xl">Detail Order</b>
+              </Typography>
+              <i
+                className="icon fa fa-times"
+                aria-hidden="true"
+                onClick={handleClose}
+              ></i>
+            </Toolbar>
+            <Typography
+              id="transition-modal-description"
+              sx={{ mt: 2 }}
+              component={"div"}
+            >
+              <DetailOrderList
+                data={id}
+                handleClose={handleClose}
+                fetchItem={fetchItem}
+              />
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 };

@@ -130,7 +130,7 @@ const ListBrand = () => {
     }
   };
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listBrand.filter((rowsPerPage) => {
         return rowsPerPage.name

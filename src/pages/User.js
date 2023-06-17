@@ -1,11 +1,9 @@
 import {
-  Button,
-  ButtonGroup,
   CircularProgress,
   Fade,
   Modal,
   Paper,
-  Stack,
+  Popover,
   Table,
   TableBody,
   TableCell,
@@ -17,12 +15,11 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Description from "../components/Modal/Description";
-import DeleteCategory from "../components/ListCategory/CRUD/DeleteCategory";
 import Profile from "../components/Home/Profile/Profile";
 import Status from "../components/Modal/Status";
 import ResetPasswword from "../components/Modal/ResetPassword";
@@ -90,28 +87,37 @@ const User = () => {
   const [value, setValue] = useState("");
   const [isLoading, setLoading] = useState(true);
   const [openDesc, setOpenDesc] = useState(false);
-  const handleOpenEdit = (id) => {
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openPop = Boolean(anchorEl);
+  const idPop = openPop ? "simple-popover" : undefined;
+
+  const handleClickPop = (event, id) => {
+    event.preventDefault();
     setId(id);
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClosePop = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenEdit = () => {
     setOpenEdit(true);
   };
   const handleCloseEdit = () => setOpenEdit(false);
 
-  const handleOpenStatus = (id) => {
-    setId(id);
+  const handleOpenStatus = () => {
     setOpenStatus(true);
   };
 
   const handleCloseStatus = () => setOpenStatus(false);
 
-  const handleOpenPassword = (id) => {
-    setId(id);
+  const handleOpenPassword = () => {
     setOpenPassword(true);
   };
 
   const handleClosePassword = () => setOpenPassword(false);
 
-  const handleOpenDesc = (id) => {
-    setId(id);
+  const handleOpenDesc = () => {
     setOpenDesc(true);
   };
 
@@ -138,7 +144,7 @@ const User = () => {
     }
   };
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listUser.filter((rowsPerPage) => {
         return rowsPerPage.name
@@ -244,41 +250,68 @@ const User = () => {
                                 },
                               }}
                             >
-                              <ButtonGroup
-                                variant="text"
-                                aria-label="text button group"
+                              <button
+                                className="btnElipsis"
+                                onClick={(e) => handleClickPop(e, userData)}
                               >
-                                <Stack spacing={1} direction="row">
-                                  <button
-                                    variant="contained"
-                                    className="bg-green-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenEdit(userData)}
-                                  >
-                                    Sunting
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-blue-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenStatus(userData)}
-                                  >
-                                    Pengaturan Status
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-red-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenPassword(userData)}
-                                  >
-                                    Pengaturan Ulang Password
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-gray-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenDesc(userData)}
-                                  >
-                                    Detil Akun
-                                  </button>
-                                </Stack>
-                              </ButtonGroup>
+                                <i
+                                  className="icon-elip fa fa-ellipsis-h"
+                                  aria-hidden="true"
+                                ></i>
+                              </button>
+                              <Popover
+                                id={idPop}
+                                open={openPop}
+                                className="-ml-4"
+                                anchorEl={anchorEl}
+                                onClose={handleClosePop}
+                                anchorOrigin={{
+                                  vertical: "bottom",
+                                  horizontal: "right",
+                                }}
+                              >
+                                <Typography
+                                  className="w-full"
+                                  component={"div"}
+                                >
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenEdit}
+                                    >
+                                      Sunting
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenStatus}
+                                    >
+                                      Pengaturan Status
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenPassword}
+                                    >
+                                      Pengaturan Ulang Password
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenDesc}
+                                    >
+                                      Detil Akun
+                                    </button>
+                                  </div>
+                                </Typography>
+                              </Popover>
                             </Box>
                           </TableCell>
                         </TableRow>
@@ -325,41 +358,68 @@ const User = () => {
                                 },
                               }}
                             >
-                              <ButtonGroup
-                                variant="text"
-                                aria-label="text button group"
+                              <button
+                                className="btnElipsis"
+                                onClick={(e) => handleClickPop(e, userData)}
                               >
-                                <Stack spacing={1} direction="row">
-                                  <button
-                                    variant="contained"
-                                    className="bg-green-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenEdit(userData)}
-                                  >
-                                    Sunting
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-blue-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenStatus(userData)}
-                                  >
-                                    Pengaturan Status
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-red-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenPassword(userData)}
-                                  >
-                                    Pengaturan Ulang Password
-                                  </button>
-                                  <button
-                                    variant="contained"
-                                    className="bg-gray-600 px-6 py-2 text-white rounded-sm"
-                                    onClick={() => handleOpenDesc(userData)}
-                                  >
-                                    Detil Akun
-                                  </button>
-                                </Stack>
-                              </ButtonGroup>
+                                <i
+                                  className="icon-elip fa fa-ellipsis-h"
+                                  aria-hidden="true"
+                                ></i>
+                              </button>
+                              <Popover
+                                id={idPop}
+                                open={openPop}
+                                className="-ml-4"
+                                anchorEl={anchorEl}
+                                onClose={handleClosePop}
+                                anchorOrigin={{
+                                  vertical: "bottom",
+                                  horizontal: "right",
+                                }}
+                              >
+                                <Typography
+                                  className="w-full"
+                                  component={"div"}
+                                >
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenEdit}
+                                    >
+                                      Sunting
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenStatus}
+                                    >
+                                      Pengaturan Status
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenPassword}
+                                    >
+                                      Pengaturan Ulang Password
+                                    </button>
+                                  </div>
+                                  <div className="popOver">
+                                    <button
+                                      variant="contained"
+                                      className="px-6 py-2 rounded-sm"
+                                      onClick={handleOpenDesc}
+                                    >
+                                      Detil Akun
+                                    </button>
+                                  </div>
+                                </Typography>
+                              </Popover>
                             </Box>
                           </TableCell>
                         </TableRow>

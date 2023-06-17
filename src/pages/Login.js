@@ -21,6 +21,7 @@ export default function Login() {
               alert(resp.data.message);
               const accessToken = resp.data.token;
               localStorage.setItem("auth-token", accessToken);
+              localStorage.setItem("auth-id", resp.data.id);
               localStorage.setItem("auth-name", resp.data.username);
               localStorage.setItem("auth-role", resp.data.role);
               localStorage.setItem("auth-email", resp.data.email);

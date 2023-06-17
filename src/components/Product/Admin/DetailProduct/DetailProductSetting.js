@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonGroup,
   CircularProgress,
   Fade,
@@ -21,8 +20,6 @@ import "../../../../App.css";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import DeleteProduct from "../../CRUD/DeleteProduct";
-import EditProduct from "../../CRUD/EditProduct";
 import { Link, useParams } from "react-router-dom";
 import { numberWithCommas } from "../../../../utils/comma";
 import CreateDetailProduct from "./CreateDetailProduct";
@@ -101,7 +98,6 @@ const DetailProductSetting = () => {
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
   const [searched, setSearched] = useState();
   const [value, setValue] = useState("");
   const [isLoading, setLoading] = useState(true);
@@ -116,12 +112,6 @@ const DetailProductSetting = () => {
     setOpenEdit(true);
   };
   const handleCloseEdit = () => setOpenEdit(false);
-
-  const handleOpenDelete = (id) => {
-    setId(id);
-    setOpenDelete(true);
-  };
-  const handleCloseDelete = () => setOpenDelete(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -147,7 +137,7 @@ const DetailProductSetting = () => {
     });
   };
   const filterData = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value !== "") {
       setValue(e.target.value);
       const filteredRows = listDetail.filter((rowsPerPage) => {
         return rowsPerPage.name
