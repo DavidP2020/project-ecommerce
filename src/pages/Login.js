@@ -12,30 +12,33 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      axios.get("/sanctum/csrf-cookie").then((response) => {
-        axios
-          .post("/api/login", JSON.stringify({ email, password }))
-          .then((resp) => {
-            console.log(resp.data);
-            if (resp.data.status === 200) {
-              alert(resp.data.message);
-              const accessToken = resp.data.token;
-              localStorage.setItem("auth-token", accessToken);
-              localStorage.setItem("auth-id", resp.data.id);
-              localStorage.setItem("auth-name", resp.data.username);
-              localStorage.setItem("auth-role", resp.data.role);
-              localStorage.setItem("auth-email", resp.data.email);
-              navigate("/");
-              window.location.reload(false);
-            } else if (resp.data.status === 401) {
-              alert(resp.data.message);
-            } else if (resp.data.status === 403) {
+      // axios.get("/sanctum/csrf-cookie").then((response) => {
+      axios
+        .post("/api/login", JSON.stringify({ email, password }))
+        .then((resp) => {
+          console.log(resp.data);
+          if (resp.data.status === 200) {
+            alert(resp.data.message);
+            const accessToken = resp.data.token;
+            localStorage.setItem("auth-token", accessToken);
+            localStorage.setItem("auth-id", resp.data.id);
+            localStorage.setItem("auth-name", resp.data.username);
+            localStorage.setItem("auth-role", resp.data.role);
+            localStorage.setItem("auth-email", resp.data.email);
+            navigate("/");
+            window.location.reload(false);
+          } else if (resp.data.status === 402) {
+            alert(resp.data.message);
+          } else if (resp.data.status === 403) {
+            if (resp.data.message) {
               alert(resp.data.message);
             } else {
               setError(resp.data.validation_errors);
             }
-          });
-      });
+            console.log(resp);
+          }
+        });
+      // });
     } catch (err) {
       alert(err.message);
     }

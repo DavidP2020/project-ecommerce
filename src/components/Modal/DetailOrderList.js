@@ -16,7 +16,7 @@ export default function DetailOrderList({
 
   const handlePayment = async (id) => {
     const formData = new FormData();
-    formData.append("status", "Paid");
+    formData.append("status", "settlement");
     formData.append("acceptBy", username);
     try {
       axios.post(`/api/order-status/${id}`, formData).then((res) => {
@@ -63,16 +63,6 @@ export default function DetailOrderList({
                 // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
                 window.snap.pay(res.data.snapToken, {
                   onSuccess: function (result) {
-                    console.log(result);
-                    console.log(
-                      result.va_numbers
-                        ? result.va_numbers[0].bank
-                        : result.permata_va_number
-                        ? result.permata_va_number
-                        : result.bca_va_numbers
-                        ? result.bca_va_numbers
-                        : ""
-                    );
                     const formDataPayment = {
                       name: data.name,
                       phoneNum: data.phoneNum,
@@ -84,13 +74,6 @@ export default function DetailOrderList({
                       transaction_id: result.transaction_id,
                       order_id: result.order_id,
                       payment_mode: result.payment_type,
-                      payment_code: result.va_numbers
-                        ? result.va_numbers[0].bank
-                        : result.permata_va_number
-                        ? result.permata_va_number
-                        : result.bca_va_numbers
-                        ? result.bca_va_numbers
-                        : "",
                       gross_amount: result.gross_amount,
                       paidBy: username,
                       status: result.transaction_status,
@@ -364,8 +347,7 @@ export default function DetailOrderList({
                       <div>Di Tolak Oleh : {data.cancelBy}</div>
                     ) : data.paidBy && data.status === "settlement" ? (
                       <div>Di Bayar Oleh : {data.paidBy}</div>
-                    ) : (data.acceptBy && data.status === "settlement") ||
-                      data.status === "Paid" ? (
+                    ) : data.acceptBy && data.status === "settlement" ? (
                       <div>Di Terima Oleh : {data.acceptBy}</div>
                     ) : (
                       ""
@@ -378,7 +360,7 @@ export default function DetailOrderList({
                 <div>
                   <div>Tipe Pembayaran : {data.payment_mode}</div>
                   <div className="text-right mt-4">
-                    {data.status === "Paid" || data.status === "settlement" ? (
+                    {data.status === "settlement" ? (
                       <div>
                         <button className="bg-green-500 text-white p-2 rounded-md">
                           Paid

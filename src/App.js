@@ -5,12 +5,10 @@ import Category from "./pages/Category";
 import Aboutus from "./pages/Aboutus";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Sidebar from "./components/Sidebar/Sidebar";
 import Order from "./pages/Order";
 import Cart from "./pages/Cart";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Navbar from "./components/Navbar/Navbar";
 import { Box, CircularProgress } from "@mui/material";
 import Product from "./pages/Product";
 import Color from "./pages/Color";
@@ -43,19 +41,65 @@ function App() {
   });
 
   useEffect(() => {
-    axios.get("api/checkingAuthenticated").then((res) => {
-      console.log(res);
-      if (res.data.status === 200) {
-        setLogin(true);
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      setLogin(false);
-    };
+    if (accessToken) {
+      axios.get("api/checkingAuthenticated").then((res) => {
+        if (res.data.status === 200) {
+          setLogin(true);
+        }
+        setLoading(false);
+      });
+    } else {
+      return () => {
+        setLogin(false);
+      };
+    }
   }, []);
+  const refreshToken = async () => {
+    try {
+      const resp = await axios.get("aoi/refresh");
+      console.log("refresh token", resp.data);
+      return resp.data;
+    } catch (e) {
+      console.log("Error", e);
+    }
+  };
 
+  axios.interceptors.request.use(
+    async (config) => {
+      const token = accessToken;
+      if (token) {
+        config.headers["Authorization"] = ` Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async function (error) {
+      const originalRequest = error.config;
+      if (error.response.status === 403 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        const resp = await refreshToken();
+
+        const access_token = resp.data.token;
+
+        localStorage.setItem("auth-token", access_token);
+
+        return (axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${access_token}`);
+      }
+      return Promise.reject(error);
+    }
+  );
+  //Check Authorization
   axios.interceptors.response.use(
     undefined,
     function axiosRetryInterceptor(err) {
@@ -93,6 +137,7 @@ function App() {
       );
     }
   }
+
   return (
     <>
       <NavbarPanel />

@@ -5,11 +5,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 export default function Logout({ handleClose, ...props }) {
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("auth-token");
   const logOut = (e) => {
     e.preventDefault();
     try {
-      axios.get("/sanctum/csrf-cookie").then((response) => {
-        axios.post("/api/logout").then((resp) => {
+      // axios.get("/sanctum/csrf-cookie").then((response) => {
+      axios
+        .post("/api/logout", {
+          headers: {
+            Authorization: accessToken,
+          },
+        })
+        .then((resp) => {
           console.log(resp.data);
           if (resp.data.status === 200) {
             alert(resp.data.message);
@@ -19,7 +26,7 @@ export default function Logout({ handleClose, ...props }) {
             window.location.reload(false);
           }
         });
-      });
+      // });
     } catch (err) {
       alert(err.message);
     }

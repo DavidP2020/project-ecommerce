@@ -226,8 +226,7 @@ const ListOrder = () => {
                             {userData.phoneNum}
                           </TableCell>
                           <TableCell align="center">
-                            {userData.status === "Paid" ||
-                            userData.status === "settlement" ? (
+                            {userData.status === "settlement" ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Paid
@@ -379,8 +378,7 @@ const ListOrder = () => {
                             {userData.phoneNum}
                           </TableCell>
                           <TableCell align="center">
-                            {userData.status === "Paid" ||
-                            userData.status === "settlement" ? (
+                            {userData.status === "settlement" ? (
                               <div>
                                 <button className="bg-green-500 text-white p-2 rounded-md">
                                   Paid

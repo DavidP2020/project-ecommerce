@@ -5,40 +5,32 @@ import { Link, useNavigate } from "react-router-dom";
 import Bg from "../assets/register.svg";
 export default function Register() {
   const [error, setError] = useState();
-  const [errors, setErrors] = useState();
   const [name, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password_confirmation, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!confirmPassword) {
-      setErrors("The Confirm password field is required.");
-    } else if (password !== confirmPassword) {
-      setError("Password Doesn't match with The Confirm Password");
-    } else {
-      setErrors("");
-    }
+
     try {
-      axios.get("/sanctum/csrf-cookie").then((response) => {
-        axios
-          .post("/api/register", JSON.stringify({ name, email, password }))
-          .then((resp) => {
-            console.log(resp.data);
-            if (resp.data.status === 200) {
-              alert(resp.data.message);
-              const accessToken = resp.data.token;
-              localStorage.setItem("auth-token", accessToken);
-              localStorage.setItem("auth-name", resp.data.username);
-              navigate("/");
-              window.location.reload(false);
-            } else {
-              setError(resp.data.validation_errors);
-            }
-          });
-      });
+      // axios.get("/sanctum/csrf-cookie").then((response) => {
+      axios
+        .post(
+          "/api/register",
+          JSON.stringify({ name, email, password, password_confirmation })
+        )
+        .then((resp) => {
+          console.log(resp.data);
+          if (resp.data.status === 200) {
+            alert(resp.data.message);
+            navigate("/login");
+          } else {
+            setError(resp.data.validation_errors);
+          }
+        });
+      // });
     } catch (err) {
       alert(err.message);
     }
@@ -69,7 +61,7 @@ export default function Register() {
                 <li>{error.email}</li>
                 <li>{error.name}</li>
                 <li>{error.password}</li>
-                <li>{errors}</li>
+                <li>{error.password_confirmation}</li>
               </ul>
             </div>
           ) : (
