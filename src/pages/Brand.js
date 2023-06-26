@@ -6,8 +6,10 @@ export default function Brand() {
     document.title = "Brand";
   }, []);
   return (
-    <div className="p-7 pt-4 text-2xl font-semibold">
-      <ListBrand />
-    </div>
+    <>
+      <div className="p-7 pt-4 text-2xl font-semibold">
+        <ListBrand />
+      </div>
+    </>
   );
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { numberWithCommas } from "../utils/comma";
 import {
   Box,
-  Button,
   CircularProgress,
   List,
   ListItem,
@@ -13,7 +12,6 @@ import {
 import axios from "axios";
 import swal from "sweetalert";
 import { Link, useNavigate } from "react-router-dom";
-import TotalPrice from "../components/Transaction/TotalPrice";
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
@@ -38,7 +36,11 @@ export default function Wishlist() {
           button: false,
           timer: 2000,
         });
+        localStorage.clear();
         navigate("/login");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 2200);
       }
     } catch (error) {
       console.log(error);

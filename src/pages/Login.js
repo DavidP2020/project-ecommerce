@@ -1,13 +1,37 @@
-import { TextField } from "@mui/material";
+import {
+  Box,
+  Fade,
+  Modal,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Bg from "../assets/login.svg";
+import ForgotPassword from "../components/Modal/ForgotPassword";
 export default function Login() {
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 450,
+    bgcolor: "white",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
   const [error, setError] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,7 +71,7 @@ export default function Login() {
     document.title = "Login";
   }, []);
   return (
-    <section className="flex flex-col md:flex-row h-screen items-center w-full">
+    <section className="flex flex-col md:flex-row items-center w-full">
       <div className="bg-white w-full lg:w-1/2 xl:w-1/3 h-screen flex items-center justify-center">
         <form
           className="w-full mx-auto rounded-lg bg-white p-10 py-8 h-screen overflow-x-scroll"
@@ -96,8 +120,9 @@ export default function Login() {
               Sign In
             </button>
             <div className="text-right text-xs">
-              <Link to="/register">Lupa Password ?</Link>
+              <a onClick={handleOpen}>Lupa Password ?</a>
             </div>
+
             <div className="text-center text-xs">
               Belum Memiliki Akun ? <Link to="/register">Sign Up</Link>
             </div>
@@ -109,6 +134,37 @@ export default function Login() {
           <img className="object-cover" src={Bg} alt="" />
         </div>
       </div>
+
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        className="overflow-scroll"
+      >
+        <Fade in={open}>
+          <Box sx={style} style={{ background: "white" }} component={"div"}>
+            <Toolbar style={{ marginLeft: "-1rem" }}>
+              <Typography component="div" sx={{ flexGrow: 2 }}>
+                <b className="text-xl">Lupa Password</b>
+              </Typography>
+              <i
+                className="icon fa fa-times"
+                aria-hidden="true"
+                onClick={handleClose}
+              ></i>
+            </Toolbar>
+            <Typography
+              id="transition-modal-description"
+              sx={{ mt: 2 }}
+              component={"div"}
+            >
+              <ForgotPassword handleClose={handleClose} />
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
     </section>
   );
 }

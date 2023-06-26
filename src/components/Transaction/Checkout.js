@@ -1,9 +1,12 @@
 import {
   Box,
+  Checkbox,
   CircularProgress,
+  FormControlLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,6 +35,25 @@ export default function Checkout() {
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [status, setStatus] = useState("");
+  const [ongkos, setOngkos] = useState("");
+  const [ongkir, setOngkir] = useState(0);
+  const setCityData = [
+    {
+      value: "Tanjung Pinang",
+      label: "Tanjung Pinang",
+    },
+    {
+      value: "Kijang",
+      label: "Kijang",
+    },
+    {
+      value: "Uban",
+      label: "Uban",
+    },
+  ];
+  console.log(ongkos);
+  console.log(ongkir);
+
   const fetchData = () => {
     try {
       axios.get(`/api/profile/${accessEmail}`).then((resp) => {
@@ -70,11 +92,43 @@ export default function Checkout() {
           button: false,
           timer: 2000,
         });
-        Navigate("/login");
+        localStorage.clear();
+        navigate("/login");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 2200);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleChange = (event) => {
+    if (city) {
+      setOngkos(event.target.checked);
+      if (city === "Tanjung Pinang") {
+        setOngkir(15000);
+      } else if (city === "Kijang") {
+        setOngkir(100000);
+      } else {
+        setOngkir(50000);
+      }
+
+      if (ongkos === true) {
+        setOngkir(0);
+      }
+    } else {
+      swal({
+        title: "Error!",
+        text: "Isi Kota Terlebih dahulu",
+        icon: "error",
+        button: false,
+        timer: 2000,
+      });
+    }
+  };
+  const handleChangeCity = (event) => {
+    setCity(event.target.value);
+    setOngkos(false);
   };
 
   const handleInput = async (e, payment, total) => {
@@ -91,9 +145,10 @@ export default function Checkout() {
       payment_mode: payment,
       gross_amount: total,
       payment_id: "",
+      ongkos: ongkir,
       status: status,
     };
-    setLoading(false);
+
     switch (payment) {
       case "COD":
         try {
@@ -135,6 +190,15 @@ export default function Checkout() {
                 });
                 setError(res.data.validation_errors);
                 setLoading(false);
+              } else if (res.data.status === 403) {
+                swal({
+                  title: res.data.message,
+                  text: res.data.message,
+                  icon: "error",
+                  button: false,
+                  timer: 1500,
+                });
+                setLoading(false);
               }
             });
         } catch (err) {
@@ -167,6 +231,7 @@ export default function Checkout() {
                           address: address,
                           city: city,
                           state: state,
+                          ongkos: ongkir,
                           zip: zip,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
@@ -232,6 +297,7 @@ export default function Checkout() {
                           city: city,
                           state: state,
                           zip: zip,
+                          ongkos: ongkir,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
                           payment_mode: result.payment_type,
@@ -296,6 +362,7 @@ export default function Checkout() {
                           city: city,
                           state: state,
                           zip: zip,
+                          ongkos: ongkir,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
                           payment_mode: result.payment_type,
@@ -494,14 +561,21 @@ export default function Checkout() {
                 <div className="flex flex-row">
                   <div className="flexInput">
                     <TextField
+                      select
                       helperText="Please enter your City"
                       id="city"
                       name="city"
                       label="City"
                       value={city}
-                      type="text"
-                      onChange={(e) => setCity(e.target.value)}
-                    />
+                      variant="outlined"
+                      onChange={handleChangeCity}
+                    >
+                      {setCityData.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </div>
                   <div className="flexInput ml-4">
                     <TextField
@@ -624,9 +698,19 @@ export default function Checkout() {
                               );
                             })}
                           </List>
+                          <FormControlLabel
+                            label="Ongkos Kirim"
+                            control={
+                              <Checkbox
+                                checked={ongkos}
+                                onChange={handleChange}
+                              />
+                            }
+                          />
                         </nav>
                         <TotalPrice
                           total={cart}
+                          ongkir={ongkir}
                           action={"order"}
                           handleInput={handleInput}
                         />

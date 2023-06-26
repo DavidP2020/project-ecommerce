@@ -20,9 +20,9 @@ export default function Logout({ handleClose, ...props }) {
           console.log(resp.data);
           if (resp.data.status === 200) {
             alert(resp.data.message);
-            localStorage.clear();
             handleClose();
             navigate("/");
+            localStorage.clear();
             window.location.reload(false);
           }
         });

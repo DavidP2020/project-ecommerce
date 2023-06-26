@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import swal from "sweetalert";
 import axios from "axios";
 import OrderDetail from "./OrderDetail";
+import { useNavigate } from "react-router-dom";
 
 export default function DetailOrderList({
   data,
@@ -13,6 +14,7 @@ export default function DetailOrderList({
 }) {
   const accessRole = localStorage.getItem("auth-role");
   const username = localStorage.getItem("auth-name");
+  const navigate = useNavigate();
 
   const handlePayment = async (id) => {
     const formData = new FormData();
@@ -39,6 +41,19 @@ export default function DetailOrderList({
             button: false,
             timer: 1500,
           });
+        } else if (res.data.status === 401) {
+          swal({
+            title: "Error!",
+            text: res.data.message,
+            icon: "error",
+            button: false,
+            timer: 2000,
+          });
+          localStorage.clear();
+          navigate("/login");
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2200);
         }
       });
     } catch (err) {
@@ -71,6 +86,7 @@ export default function DetailOrderList({
                       city: data.city,
                       state: data.state,
                       zip: data.zip,
+                      ongkir: data.ongkir,
                       transaction_id: result.transaction_id,
                       order_id: result.order_id,
                       payment_mode: result.payment_type,
@@ -104,6 +120,11 @@ export default function DetailOrderList({
                               button: false,
                               timer: 1500,
                             });
+                            localStorage.clear();
+                            navigate("/login");
+                            setTimeout(() => {
+                              window.location.reload(false);
+                            }, 2200);
                           } else if (resp.data.status === 422) {
                             swal({
                               title: "All fields are mandatory!",
@@ -128,6 +149,7 @@ export default function DetailOrderList({
                       city: data.city,
                       state: data.state,
                       zip: data.zip,
+                      ongkir: data.ongkir,
                       transaction_id: result.transaction_id,
                       order_id: result.order_id,
                       payment_mode: result.payment_type,
@@ -161,6 +183,11 @@ export default function DetailOrderList({
                               button: false,
                               timer: 1500,
                             });
+                            localStorage.clear();
+                            navigate("/login");
+                            setTimeout(() => {
+                              window.location.reload(false);
+                            }, 2200);
                           } else if (res.data.status === 422) {
                             swal({
                               title: "All fields are mandatory!",
@@ -184,6 +211,7 @@ export default function DetailOrderList({
                       city: data.city,
                       state: data.state,
                       zip: data.zip,
+                      ongkir: data.ongkir,
                       transaction_id: result.transaction_id,
                       order_id: result.order_id,
                       payment_mode: result.payment_type,
@@ -217,6 +245,11 @@ export default function DetailOrderList({
                               button: false,
                               timer: 1500,
                             });
+                            localStorage.clear();
+                            navigate("/login");
+                            setTimeout(() => {
+                              window.location.reload(false);
+                            }, 2200);
                           } else if (res.data.status === 422) {
                             swal({
                               title: "All fields are mandatory!",
@@ -261,6 +294,7 @@ export default function DetailOrderList({
       city: data.city,
       state: data.state,
       zip: data.zip,
+      ongkir: data.ongkir,
       transaction_id: data.transaction_id,
       order_id: data.order_id,
       payment_mode: data.payment_mode,
@@ -295,6 +329,11 @@ export default function DetailOrderList({
               button: false,
               timer: 1500,
             });
+            localStorage.clear();
+            navigate("/login");
+            setTimeout(() => {
+              window.location.reload(false);
+            }, 2200);
           } else if (res.data.status === 404) {
             swal({
               title: "Order ID Not Found!",

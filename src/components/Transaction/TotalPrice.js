@@ -3,11 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { numberWithCommas } from "../../utils/comma";
 import { ButtonGroup, Stack } from "@mui/material";
 
-const TotalPrice = ({ total, action, handleInput, ...props }) => {
+const TotalPrice = ({ total, action, ongkir, handleInput, ...props }) => {
   const navigate = useNavigate();
 
-  const totalBayar = total.reduce(function (result, item) {
+  const totalHarga = total.reduce(function (result, item) {
     return result + item.product_qty * item.price;
+  }, 0);
+
+  const totalBayar = total.reduce(function (result, item) {
+    return result + item.product_qty * item.price + ongkir;
   }, 0);
 
   const totalDetail = total.reduce(function (result, item) {
@@ -20,7 +24,23 @@ const TotalPrice = ({ total, action, handleInput, ...props }) => {
         {action === "orderDetail" ? (
           <h4>Total Price : Rp. {numberWithCommas(totalDetail)}</h4>
         ) : (
-          <h4>Total Price : Rp. {numberWithCommas(totalBayar)}</h4>
+          <>
+            {ongkir !== 0 ? (
+              <>
+                <h4 className="text-xs mr-2">
+                  Ongkos Kirim : Rp. {numberWithCommas(ongkir)}
+                </h4>
+                <h4 className="text-sm m-1 mr-2">
+                  Harga : Rp. {numberWithCommas(totalHarga)}
+                </h4>
+              </>
+            ) : (
+              ""
+            )}
+            <h3 className="text-xl m-2">
+              Total Price : Rp. {numberWithCommas(totalBayar)}
+            </h3>
+          </>
         )}
         {action === "order" ? (
           <div className="text-center mt-2">

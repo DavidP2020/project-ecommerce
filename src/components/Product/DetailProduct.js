@@ -174,8 +174,13 @@ function Post() {
             text: res.data.message,
             icon: "error",
             button: false,
-            timer: 1500,
+            timer: 2000,
           });
+          localStorage.clear();
+          navigate("/login");
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 2200);
         }
       });
     } catch (err) {

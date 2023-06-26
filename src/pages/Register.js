@@ -39,9 +39,9 @@ export default function Register() {
     document.title = "Register";
   }, []);
   return (
-    <section className="flex flex-col md:flex-row h-screen items-center w-full">
-      <div className="hidden md:block px-8 md:w-1/2 xl:w-2/3 h-screen ">
-        <div className="flex flex-col justify-center">
+    <section className="flex flex-col md:flex-row h-screen w-full">
+      <div className="hidden md:block px-8 md:w-1/2 xl:w-2/3 h-screen">
+        <div className="flex flex-col justify-center items-center h-screen">
           <img className="object-cover" src={Bg} alt="" />
         </div>
       </div>

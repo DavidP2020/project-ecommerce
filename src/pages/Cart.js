@@ -292,7 +292,7 @@ export default function Cart() {
                       })}
                     </List>
                   </nav>
-                  <TotalPrice total={cart} action={"checkout"} />
+                  <TotalPrice total={cart} ongkir={0} action={"checkout"} />
                 </Box>
               )}
             </div>

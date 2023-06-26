@@ -56,7 +56,7 @@ function App() {
   }, []);
   const refreshToken = async () => {
     try {
-      const resp = await axios.get("aoi/refresh");
+      const resp = await axios.get("api/refresh");
       console.log("refresh token", resp.data);
       return resp.data;
     } catch (e) {

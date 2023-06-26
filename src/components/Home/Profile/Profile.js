@@ -32,16 +32,6 @@ export default function Profile({
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
-  const setStatus = [
-    {
-      value: "0",
-      label: "In-Active",
-    },
-    {
-      value: "1",
-      label: "Active",
-    },
-  ];
   const setGender = [
     {
       value: "female",
@@ -50,6 +40,20 @@ export default function Profile({
     {
       value: "male",
       label: "Male",
+    },
+  ];
+  const setCity = [
+    {
+      value: "Tanjung Pinang",
+      label: "Tanjung Pinang",
+    },
+    {
+      value: "Kijang",
+      label: "Kijang",
+    },
+    {
+      value: "Uban",
+      label: "Uban",
     },
   ];
   const handleInputChange = (e) => {
@@ -232,14 +236,21 @@ export default function Profile({
             </div>
             <div className="flexInput">
               <TextField
+                select
                 helperText="Please enter your City"
                 id="city"
                 name="city"
                 label="City"
                 value={state.city}
-                type="text"
+                variant="outlined"
                 onChange={handleInputChange}
-              />
+              >
+                {setCity.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
             <div className="flexInput">
               <TextField
@@ -252,23 +263,6 @@ export default function Profile({
                 onChange={handleInputChange}
               />
             </div>
-            {/* <div className="flexInput">
-            <TextField
-              select
-              label="Status"
-              helperText="Please select your Status"
-              name="status"
-              value={state.status}
-              variant="outlined"
-              onChange={handleInputChange}
-            >
-              {setStatus.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div> */}
           </div>
         </div>
         <br />

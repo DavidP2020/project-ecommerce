@@ -88,7 +88,11 @@ export default function Dashboard() {
               button: false,
               timer: 2000,
             });
+            localStorage.clear();
             navigate("/login");
+            setTimeout(() => {
+              window.location.reload(false);
+            }, 2200);
           }
           setLoading(false);
         });
