@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
+  Button,
   CircularProgress,
   ToggleButton,
   ToggleButtonGroup,
@@ -32,6 +33,9 @@ function Post() {
   const [itemQty, setitemQty] = useState(0);
   const [detail, setDetail] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [wish, setWish] = useState(true);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [loadingWish, setLoadingWish] = useState(false);
   const [qty, setQty] = useState(1);
   const [cartProduct, setcartProduct] = useState(null);
   const [alignment, setAlignment] = React.useState("left");
@@ -84,17 +88,14 @@ function Post() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoadingAdd(true);
     const data = {
       product_id: cartProduct,
       product_qty: qty,
     };
-    console.log(data);
     try {
       axios.post("/api/cart", data).then((res) => {
-        console.log(res.data);
-
         if (res.data.status === 201) {
-          console.log(data);
           swal({
             title: "Success!",
             text: res.data.message,
@@ -102,6 +103,7 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingAdd(false);
         } else if (res.data.status === 409) {
           swal({
             title: "Warning!",
@@ -110,6 +112,7 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingAdd(false);
         } else if (res.data.status === 404) {
           swal({
             title: "Warning!",
@@ -118,6 +121,7 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingAdd(false);
         } else if (res.data.status === 401) {
           swal({
             title: "Error!",
@@ -126,6 +130,7 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingAdd(false);
         }
       });
     } catch (err) {
@@ -135,16 +140,14 @@ function Post() {
 
   const handleWish = (e) => {
     e.preventDefault();
+    setLoadingWish(true);
     const data = {
       product_id: cartProduct,
     };
     console.log(data);
     try {
       axios.post("/api/wishlist", data).then((res) => {
-        console.log(res.data);
-
         if (res.data.status === 201) {
-          console.log(data);
           swal({
             title: "Success!",
             text: res.data.message,
@@ -152,14 +155,16 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 200) {
           swal({
             title: "Success!",
             text: res.data.message,
-            icon: "success",
+            icon: "info",
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 404) {
           swal({
             title: "Warning!",
@@ -168,6 +173,7 @@ function Post() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 401) {
           swal({
             title: "Error!",
@@ -181,6 +187,7 @@ function Post() {
           setTimeout(() => {
             window.location.reload(false);
           }, 2200);
+          setLoadingWish(false);
         }
       });
     } catch (err) {
@@ -372,26 +379,44 @@ function Post() {
           </div>
 
           {price ? (
-            <button
-              className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-md mx-4"
+            <Button
+              variant="contained"
+              sx={{
+                background: "#302C42",
+                ":hover": {
+                  background: "#302C42",
+                  opacity: 0.8,
+                },
+              }}
               type="button"
+              disabled={loadingAdd}
               onClick={handleSubmit}
             >
+              {loadingAdd && (
+                <CircularProgress
+                  color="inherit"
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
               Add to Cart
-            </button>
+            </Button>
           ) : (
-            <button
-              className="bg-gray-500 text-white text-sm font-medium px-14 md:px-4  py-2 rounded-md mx-4"
-              type="button"
-              disabled
-            >
+            <Button variant="contained" type="button" disabled>
               Add to Cart
-            </button>
+            </Button>
           )}
           <Checkbox
             {...label}
             icon={<FavoriteBorder />}
-            checkedIcon={<Favorite />}
+            checkedIcon={wish ? <Favorite /> : <FavoriteBorder />}
+            disabled={loadingWish}
             onClick={handleWish}
             sx={{
               color: pink[800],

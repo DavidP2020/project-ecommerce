@@ -4,6 +4,7 @@ import {
   Box,
   CircularProgress,
   List,
+  Button,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -16,14 +17,14 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [loadingWish, setLoadingWish] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const navigate = useNavigate();
 
   const fetchItem = async () => {
     try {
       let res = await axios.get(`/api/wishlist`);
-      console.log(res);
       if (res.data.status === 200) {
-        console.log(res.data);
         setWishlist(res.data.wishlist);
         setLoading(false);
       } else if (res.data.status === 404) {
@@ -49,6 +50,7 @@ export default function Wishlist() {
 
   const deleteWishlist = (e, wishlist_id) => {
     e.preventDefault();
+    setLoadingDelete(true);
     try {
       axios.delete(`/api/wishlist/${wishlist_id}`).then((res) => {
         if (res.data.status === 200) {
@@ -68,6 +70,7 @@ export default function Wishlist() {
             button: false,
             timer: 1500,
           });
+          setLoadingDelete(false);
         }
       });
     } catch (err) {
@@ -76,17 +79,14 @@ export default function Wishlist() {
   };
   const handleSubmit = (e, product_id) => {
     e.preventDefault();
+    setLoadingWish(true);
     const data = {
       product_id: product_id,
       product_qty: 1,
     };
-    console.log(data);
     try {
       axios.post("/api/cart", data).then((res) => {
-        console.log(res.data);
-
         if (res.data.status === 201) {
-          console.log(data);
           swal({
             title: "Success!",
             text: res.data.message,
@@ -94,6 +94,7 @@ export default function Wishlist() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 409) {
           swal({
             title: "Warning!",
@@ -102,6 +103,7 @@ export default function Wishlist() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 404) {
           swal({
             title: "Warning!",
@@ -110,6 +112,7 @@ export default function Wishlist() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         } else if (res.data.status === 401) {
           swal({
             title: "Error!",
@@ -118,6 +121,7 @@ export default function Wishlist() {
             button: false,
             timer: 1500,
           });
+          setLoadingWish(false);
         }
       });
     } catch (err) {
@@ -191,14 +195,39 @@ export default function Wishlist() {
                                         {data.productName}
                                       </div>
                                       <div className="right-side w-full lg:w-1/2 text-right">
-                                        <button
-                                          className="bg-red-500 p-3 rounded-md text-white hover:opacity-90"
+                                        <Button
+                                          variant="contained"
+                                          sx={{
+                                            background: "red",
+                                            color: "white",
+                                            py: 2,
+                                            borderRadius: 2,
+                                            ":hover": {
+                                              color: "black",
+                                              background: "red",
+                                              opacity: 0.8,
+                                            },
+                                          }}
+                                          disabled={loadingDelete}
                                           onClick={(e) =>
                                             deleteWishlist(e, data.id)
                                           }
                                         >
+                                          {loadingDelete && (
+                                            <CircularProgress
+                                              color="inherit"
+                                              size={24}
+                                              sx={{
+                                                position: "absolute",
+                                                top: "50%",
+                                                left: "50%",
+                                                marginTop: "-12px",
+                                                marginLeft: "-12px",
+                                              }}
+                                            />
+                                          )}
                                           <i className="fa-solid fa-trash"></i>
-                                        </button>
+                                        </Button>
                                       </div>
                                     </div>
                                   </Typography>
@@ -230,7 +259,7 @@ export default function Wishlist() {
                                         <div className="font-semibold">
                                           {data.colorName}
                                         </div>
-                                        <i className="flex justify-center items-center ml-2 fa-sharp fa-solid fa-caret-down"></i>
+                                        {/* <i className="flex justify-center items-center ml-2 fa-sharp fa-solid fa-caret-down"></i> */}
                                       </div>
                                     </button>
                                   </div>
@@ -239,15 +268,36 @@ export default function Wishlist() {
                                       {data.qty} Item left
                                     </div>
                                     <div className="w-full text-right">
-                                      <button
-                                        className="bg-primary text-white text-sm font-medium px-14 md:px-4  py-2 rounded-md mx-4"
+                                      <Button
+                                        variant="contained"
+                                        sx={{
+                                          background: "#302C42",
+                                          ":hover": {
+                                            background: "#302C42",
+                                            opacity: 0.8,
+                                          },
+                                        }}
                                         type="button"
+                                        disabled={loadingWish}
                                         onClick={(e) =>
                                           handleSubmit(e, data.product_id)
                                         }
                                       >
+                                        {loadingWish && (
+                                          <CircularProgress
+                                            color="inherit"
+                                            size={24}
+                                            sx={{
+                                              position: "absolute",
+                                              top: "50%",
+                                              left: "50%",
+                                              marginTop: "-12px",
+                                              marginLeft: "-12px",
+                                            }}
+                                          />
+                                        )}
                                         Add to Cart
-                                      </button>
+                                      </Button>
                                     </div>
                                   </div>
 

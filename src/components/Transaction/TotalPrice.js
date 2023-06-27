@@ -1,9 +1,17 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { numberWithCommas } from "../../utils/comma";
-import { ButtonGroup, Stack } from "@mui/material";
+import { Button, ButtonGroup, CircularProgress, Stack } from "@mui/material";
 
-const TotalPrice = ({ total, action, ongkir, handleInput, ...props }) => {
+const TotalPrice = ({
+  total,
+  action,
+  ongkir,
+  handleInput,
+  loadingOrder,
+  loadingPayment,
+  ...props
+}) => {
   const navigate = useNavigate();
 
   const totalHarga = total.reduce(function (result, item) {
@@ -18,11 +26,28 @@ const TotalPrice = ({ total, action, ongkir, handleInput, ...props }) => {
     return result + item.qty * item.price;
   }, 0);
 
+  const totalPembayar = total.reduce(function (result, item) {
+    return result + item.qty * item.price + ongkir;
+  }, 0);
   return (
     <>
       <div className="flex flex-col justify-end items-end text-lg">
         {action === "orderDetail" ? (
-          <h4>Total Price : Rp. {numberWithCommas(totalDetail)}</h4>
+          <>
+            {ongkir !== 0 ? (
+              <>
+                <h4 className="text-xs mr-2">
+                  Ongkos Kirim : Rp. {numberWithCommas(ongkir)}
+                </h4>
+                <h4 className="text-sm m-1 mr-2">
+                  Harga : Rp. {numberWithCommas(totalDetail)}
+                </h4>
+              </>
+            ) : (
+              ""
+            )}
+            <h4>Total Price : Rp. {numberWithCommas(totalPembayar)}</h4>
+          </>
         ) : (
           <>
             {ongkir !== 0 ? (
@@ -46,20 +71,62 @@ const TotalPrice = ({ total, action, ongkir, handleInput, ...props }) => {
           <div className="text-center mt-2">
             <ButtonGroup variant="text" aria-label="text button group">
               <Stack spacing={1} direction="row">
-                <button
+                <Button
                   variant="contained"
+                  sx={{
+                    background: "#302C42",
+                    ":hover": {
+                      background: "#302C42",
+                      opacity: 0.8,
+                    },
+                  }}
+                  disabled={loadingOrder}
                   className="bg-black px-10 py-2 mt text-white rounded-sm text-xs hover:opacity-70"
                   onClick={(e) => handleInput(e, "COD", totalBayar)}
                 >
+                  {loadingOrder && (
+                    <CircularProgress
+                      color="inherit"
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
                   Order Now
-                </button>
-                <button
+                </Button>
+                <Button
                   variant="contained"
+                  sx={{
+                    background: "#302C42",
+                    ":hover": {
+                      background: "#302C42",
+                      opacity: 0.8,
+                    },
+                  }}
                   className="bg-black px-10 py-2 mt text-white rounded-sm text-xs hover:opacity-70"
+                  disabled={loadingPayment}
                   onClick={(e) => handleInput(e, "Online", totalBayar)}
                 >
+                  {loadingPayment && (
+                    <CircularProgress
+                      color="inherit"
+                      size={24}
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-12px",
+                        marginLeft: "-12px",
+                      }}
+                    />
+                  )}
                   Online Payment
-                </button>
+                </Button>
               </Stack>
             </ButtonGroup>
           </div>
@@ -68,9 +135,18 @@ const TotalPrice = ({ total, action, ongkir, handleInput, ...props }) => {
         ) : (
           <div className="text-center">
             <Link to="/checkout" className="hover:underline">
-              <button className="bg-black rounded-md text-white px-12 py-2 mt-2 text-xs hover:opacity-70">
+              <Button
+                variant="contained"
+                sx={{
+                  background: "#302C42",
+                  ":hover": {
+                    background: "#302C42",
+                    opacity: 0.8,
+                  },
+                }}
+              >
                 Check Out
-              </button>
+              </Button>
             </Link>
           </div>
         )}

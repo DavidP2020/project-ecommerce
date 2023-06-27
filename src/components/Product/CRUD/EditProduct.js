@@ -50,6 +50,7 @@ export default function EditProduct({
     description: data.description,
     weight: data.weight,
     unit: data.unit,
+    trending: data.trending,
     brand_id: data.brand_id,
     status: data.status,
   });
@@ -256,7 +257,7 @@ export default function EditProduct({
               <FormControlLabel
                 required
                 control={
-                  <Checkbox checked={trending} onChange={handleChecked} />
+                  <Checkbox checked={state.trending} onChange={handleChecked} />
                 }
                 label="Trending"
               />

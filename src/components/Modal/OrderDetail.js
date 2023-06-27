@@ -129,7 +129,11 @@ export default function ({ data, ...props }) {
               })}
             </List>
           </nav>
-          <TotalPrice total={cart} action={"orderDetail"} />
+          <TotalPrice
+            total={cart}
+            ongkir={data.ongkir}
+            action={"orderDetail"}
+          />
         </>
       )}
     </div>

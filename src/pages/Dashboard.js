@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import VerifyAccount from "../components/Modal/VerifyAccount";
 import Countdown from "../components/Modal/Countdown";
+import ListOrder from "../components/Order/ListOrder";
+import UnpaidOrder from "../components/Modal/UnpaidOrder";
 
 export default function Dashboard() {
   const style = {
@@ -397,6 +399,12 @@ export default function Dashboard() {
           </Box>
         </Fade>
       </Modal>
+      <div className="flex lg:flex-row flex-col">
+        <div className="w-full lg:w-2/5">
+          <UnpaidOrder />
+        </div>
+        <div className="w-full lg:w-3/5 ml-4"></div>
+      </div>
     </div>
   );
 }

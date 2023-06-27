@@ -132,6 +132,7 @@ const ListOrder = () => {
             window.location.reload(false);
           }, 2200);
         }
+
         setLoading(false);
       });
     } catch (error) {

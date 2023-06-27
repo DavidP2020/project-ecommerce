@@ -27,6 +27,8 @@ export default function Checkout() {
   const accessEmail = localStorage.getItem("auth-email");
   const accessRole = localStorage.getItem("auth-role");
 
+  const [loadingPayment, setLoadingPayment] = useState(false);
+  const [loadingOrder, setLoadingOrder] = useState(false);
   const [name, setName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [email, setEmail] = useState("");
@@ -51,8 +53,6 @@ export default function Checkout() {
       label: "Uban",
     },
   ];
-  console.log(ongkos);
-  console.log(ongkir);
 
   const fetchData = () => {
     try {
@@ -133,7 +133,6 @@ export default function Checkout() {
 
   const handleInput = async (e, payment, total) => {
     e.preventDefault();
-
     const formData = {
       name: name,
       phoneNum: phoneNum,
@@ -145,12 +144,13 @@ export default function Checkout() {
       payment_mode: payment,
       gross_amount: total,
       payment_id: "",
-      ongkos: ongkir,
+      ongkir: ongkir,
       status: status,
     };
 
     switch (payment) {
       case "COD":
+        setLoadingOrder(true);
         try {
           axios
             .post("/api/place-order", formData, {
@@ -178,7 +178,7 @@ export default function Checkout() {
                   button: false,
                   timer: 1500,
                 });
-
+                setLoadingOrder(false);
                 setLoading(false);
               } else if (res.data.status === 422) {
                 swal({
@@ -189,6 +189,7 @@ export default function Checkout() {
                   timer: 1500,
                 });
                 setError(res.data.validation_errors);
+                setLoadingOrder(false);
                 setLoading(false);
               } else if (res.data.status === 403) {
                 swal({
@@ -198,6 +199,7 @@ export default function Checkout() {
                   button: false,
                   timer: 1500,
                 });
+                setLoadingOrder(false);
                 setLoading(false);
               }
             });
@@ -206,6 +208,7 @@ export default function Checkout() {
         }
         break;
       case "Online":
+        setLoadingPayment(true);
         try {
           axios
             .post("/api/payment", formData, {
@@ -231,12 +234,11 @@ export default function Checkout() {
                           address: address,
                           city: city,
                           state: state,
-                          ongkos: ongkir,
+                          ongkir: ongkir,
                           zip: zip,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
                           payment_mode: result.payment_type,
-                          payment_code: result.bca_va_number,
                           gross_amount: result.gross_amount,
                           paidBy: username,
                           status: result.transaction_status,
@@ -268,8 +270,8 @@ export default function Checkout() {
                                   button: false,
                                   timer: 1500,
                                 });
-
                                 setLoading(false);
+                                setLoadingPayment(false);
                               } else if (res.data.status === 422) {
                                 swal({
                                   title: "All fields are mandatory!",
@@ -280,12 +282,22 @@ export default function Checkout() {
                                 });
                                 setError(res.data.validation_errors);
                                 setLoading(false);
+                                setLoadingPayment(false);
+                              } else if (res.data.status === 403) {
+                                swal({
+                                  title: res.data.message,
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setLoading(false);
+                                setLoadingPayment(false);
                               }
                             });
                         } catch (err) {
                           alert(err.message);
                         }
-                        console.log("c", result);
                       },
                       onPending: function (result) {
                         /* You may add your own implementation here */
@@ -297,11 +309,10 @@ export default function Checkout() {
                           city: city,
                           state: state,
                           zip: zip,
-                          ongkos: ongkir,
+                          ongkir: ongkir,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
                           payment_mode: result.payment_type,
-                          payment_code: result.payment_code,
                           gross_amount: result.gross_amount,
                           status: result.transaction_status,
                         };
@@ -332,8 +343,8 @@ export default function Checkout() {
                                   button: false,
                                   timer: 1500,
                                 });
-
                                 setLoading(false);
+                                setLoadingPayment(false);
                               } else if (res.data.status === 422) {
                                 swal({
                                   title: "All fields are mandatory!",
@@ -344,13 +355,22 @@ export default function Checkout() {
                                 });
                                 setError(res.data.validation_errors);
                                 setLoading(false);
+                                setLoadingPayment(false);
+                              } else if (res.data.status === 403) {
+                                swal({
+                                  title: res.data.message,
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setLoading(false);
+                                setLoadingPayment(false);
                               }
                             });
                         } catch (err) {
                           alert(err.message);
                         }
-
-                        console.log("b", result);
                       },
                       onError: function (result) {
                         /* You may add your own implementation here */
@@ -362,11 +382,10 @@ export default function Checkout() {
                           city: city,
                           state: state,
                           zip: zip,
-                          ongkos: ongkir,
+                          ongkir: ongkir,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
                           payment_mode: result.payment_type,
-                          payment_code: result.payment_code,
                           gross_amount: result.gross_amount,
                           status: result.transaction_status,
                         };
@@ -397,8 +416,8 @@ export default function Checkout() {
                                   button: false,
                                   timer: 1500,
                                 });
-
                                 setLoading(false);
+                                setLoadingPayment(false);
                               } else if (res.data.status === 422) {
                                 swal({
                                   title: "All fields are mandatory!",
@@ -409,16 +428,26 @@ export default function Checkout() {
                                 });
                                 setError(res.data.validation_errors);
                                 setLoading(false);
+                                setLoadingPayment(false);
+                              } else if (res.data.status === 403) {
+                                swal({
+                                  title: res.data.message,
+                                  text: res.data.message,
+                                  icon: "error",
+                                  button: false,
+                                  timer: 1500,
+                                });
+                                setLoading(false);
+                                setLoadingPayment(false);
                               }
                             });
                         } catch (err) {
                           alert(err.message);
                         }
-
-                        console.log("a", result);
                       },
                       onClose: function () {
                         /* You may add your own implementation here */
+                        setLoadingPayment(false);
                         swal({
                           title:
                             "Kamu Menutup Popup Tanpa Menuelesaikan Pembayaran",
@@ -441,7 +470,6 @@ export default function Checkout() {
                   button: false,
                   timer: 1500,
                 });
-
                 setLoading(false);
               } else if (res.data.status === 422) {
                 swal({
@@ -452,6 +480,15 @@ export default function Checkout() {
                   timer: 1500,
                 });
                 setError(res.data.validation_errors);
+                setLoading(false);
+              } else if (res.data.status === 403) {
+                swal({
+                  title: res.data.message,
+                  text: res.data.message,
+                  icon: "error",
+                  button: false,
+                  timer: 1500,
+                });
                 setLoading(false);
               }
             });
@@ -712,6 +749,8 @@ export default function Checkout() {
                           total={cart}
                           ongkir={ongkir}
                           action={"order"}
+                          loadingPayment={loadingPayment}
+                          loadingOrder={loadingOrder}
                           handleInput={handleInput}
                         />
                       </Box>

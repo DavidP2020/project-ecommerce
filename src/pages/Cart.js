@@ -18,6 +18,7 @@ import TotalPrice from "../components/Transaction/TotalPrice";
 export default function Cart() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [loadingCart, setLoadingCart] = useState(false);
   const [itemQty, setitemQty] = useState(0);
   const [qty, setQty] = useState(1);
   const navigate = useNavigate();
@@ -53,7 +54,6 @@ export default function Cart() {
   const fetchItem = async () => {
     try {
       let res = await axios.get(`/api/cart`);
-      console.log(res);
       if (res.data.status === 200) {
         console.log(res.data);
         setCart(res.data.cart);
@@ -106,6 +106,7 @@ export default function Cart() {
 
   const deleteCart = (e, cart_id) => {
     e.preventDefault();
+    setLoadingCart(true);
     try {
       axios.delete(`/api/cart/${cart_id}`).then((res) => {
         if (res.data.status === 200) {
@@ -125,6 +126,7 @@ export default function Cart() {
             button: false,
             timer: 1500,
           });
+          setLoadingCart(false);
         }
       });
     } catch (err) {
@@ -235,7 +237,7 @@ export default function Cart() {
                                         <div className="font-semibold">
                                           {data.colorName}
                                         </div>
-                                        <i className="flex justify-center items-center ml-2 fa-sharp fa-solid fa-caret-down"></i>
+                                        {/* <i className="flex justify-center items-center ml-2 fa-sharp fa-solid fa-caret-down"></i> */}
                                       </div>
                                     </button>
                                   </div>
@@ -274,12 +276,37 @@ export default function Cart() {
                                       </div>
                                     </div>
                                     <div className="w-full text-right">
-                                      <button
-                                        className="bg-red-500 p-3 rounded-md text-white hover:opacity-90"
+                                      <Button
+                                        variant="contained"
+                                        sx={{
+                                          background: "red",
+                                          color: "white",
+                                          py: 2,
+                                          borderRadius: 2,
+                                          ":hover": {
+                                            color: "black",
+                                            background: "red",
+                                            opacity: 0.8,
+                                          },
+                                        }}
+                                        disabled={loadingCart}
                                         onClick={(e) => deleteCart(e, data.id)}
                                       >
+                                        {loadingCart && (
+                                          <CircularProgress
+                                            color="inherit"
+                                            size={24}
+                                            sx={{
+                                              position: "absolute",
+                                              top: "50%",
+                                              left: "50%",
+                                              marginTop: "-12px",
+                                              marginLeft: "-12px",
+                                            }}
+                                          />
+                                        )}
                                         <i className="fa-solid fa-trash"></i>
-                                      </button>
+                                      </Button>
                                     </div>
                                   </div>
 
