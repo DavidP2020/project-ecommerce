@@ -145,6 +145,7 @@ export default function Checkout() {
       gross_amount: total,
       payment_id: "",
       ongkir: ongkir,
+      statusOrderan: 0,
       status: status,
     };
 
@@ -235,6 +236,7 @@ export default function Checkout() {
                           city: city,
                           state: state,
                           ongkir: ongkir,
+                          statusOrderan: 0,
                           zip: zip,
                           transaction_id: result.transaction_id,
                           order_id: result.order_id,
@@ -315,6 +317,7 @@ export default function Checkout() {
                           payment_mode: result.payment_type,
                           gross_amount: result.gross_amount,
                           status: result.transaction_status,
+                          statusOrderan: 0,
                         };
                         try {
                           axios
@@ -388,6 +391,7 @@ export default function Checkout() {
                           payment_mode: result.payment_type,
                           gross_amount: result.gross_amount,
                           status: result.transaction_status,
+                          statusOrderan: 0,
                         };
                         try {
                           axios
@@ -567,6 +571,7 @@ export default function Checkout() {
                       name="email"
                       label="Email"
                       value={email}
+                      disabled={accessRole === "ADMIN" ? false : true}
                       type="text"
                       onChange={(e) => setEmail(e.target.value)}
                     />

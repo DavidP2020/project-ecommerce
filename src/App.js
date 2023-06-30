@@ -54,6 +54,7 @@ function App() {
       };
     }
   }, []);
+  console.log("abd");
   const refreshToken = async () => {
     try {
       const resp = await axios.get("api/refresh");
@@ -82,6 +83,7 @@ function App() {
       return response;
     },
     async function (error) {
+      console.log("sad");
       const originalRequest = error.config;
       if (error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;

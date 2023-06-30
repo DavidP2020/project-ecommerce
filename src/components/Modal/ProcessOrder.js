@@ -24,7 +24,7 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import swal from "sweetalert";
 import DetailOrderList from "./DetailOrderList";
 
-const UnpaidOrder = ({ fetchData, action, ...props }) => {
+const ProcessOrder = ({ fetchData, action, ...props }) => {
   const columns = [
     {
       id: "order",
@@ -41,6 +41,12 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
     {
       id: "status",
       label: "Status",
+      minWidth: 100,
+      align: "center",
+    },
+    {
+      id: "statusOrder",
+      label: "Status Pemesanan",
       minWidth: 100,
       align: "center",
     },
@@ -89,7 +95,7 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
   };
   const fetchItem = () => {
     try {
-      axios.get(`/api/dashboard-order`).then((resp) => {
+      axios.get(`/api/dashboard-process`).then((resp) => {
         if (resp.data.status === 200) {
           setListOrder(resp.data.order);
         } else if (resp.data.status === 401) {
@@ -119,7 +125,7 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
 
   return (
     <div>
-      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum Dibayar</h2>
+      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum Di Proses</h2>
 
       {isLoading ? (
         <div className="tableLoad">
@@ -191,6 +197,21 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
                             <div>
                               <button className="bg-red-500 text-white p-2 rounded-md">
                                 Unpaid
+                              </button>
+                            </div>
+                          )}
+                        </TableCell>{" "}
+                        <TableCell align="center">
+                          {userData.statusOrderan === 1 ? (
+                            <div>
+                              <button className="bg-green-500 text-white p-2 rounded-md">
+                                Done
+                              </button>
+                            </div>
+                          ) : (
+                            <div>
+                              <button className="bg-red-500 text-white p-2 rounded-md">
+                                Processed
                               </button>
                             </div>
                           )}
@@ -278,4 +299,4 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
   );
 };
 
-export default UnpaidOrder;
+export default ProcessOrder;

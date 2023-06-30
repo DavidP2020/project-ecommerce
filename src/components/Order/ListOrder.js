@@ -65,7 +65,13 @@ const ListOrder = () => {
     },
     {
       id: "status",
-      label: "Status",
+      label: "Status Pembayaran",
+      minWidth: 170,
+      align: "center",
+    },
+    {
+      id: "statusOrder",
+      label: "Status Orderan",
       minWidth: 170,
       align: "center",
     },
@@ -262,7 +268,22 @@ const ListOrder = () => {
                                 </button>
                               </div>
                             )}
-                          </TableCell>{" "}
+                          </TableCell>
+                          <TableCell align="center">
+                            {userData.statusOrderan === 1 ? (
+                              <div>
+                                <button className="bg-green-500 text-white p-2 rounded-md">
+                                  Done
+                                </button>
+                              </div>
+                            ) : (
+                              <div>
+                                <button className="bg-red-500 text-white p-2 rounded-md">
+                                  Processed
+                                </button>
+                              </div>
+                            )}
+                          </TableCell>
                           <TableCell align="center">
                             <Box
                               component={"div"}
@@ -411,6 +432,21 @@ const ListOrder = () => {
                               <div>
                                 <button className="bg-red-500 text-white p-2 rounded-md">
                                   Unpaid
+                                </button>
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            {userData.statusOrderan === 1 ? (
+                              <div>
+                                <button className="bg-green-500 text-white p-2 rounded-md">
+                                  Done
+                                </button>
+                              </div>
+                            ) : (
+                              <div>
+                                <button className="bg-red-500 text-white p-2 rounded-md">
+                                  Processed
                                 </button>
                               </div>
                             )}

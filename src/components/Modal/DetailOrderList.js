@@ -10,6 +10,8 @@ export default function DetailOrderList({
   data,
   handleClose,
   fetchItem,
+  fetchData,
+  action,
   ...props
 }) {
   const accessRole = localStorage.getItem("auth-role");
@@ -18,11 +20,19 @@ export default function DetailOrderList({
   const [isLoading, setLoading] = useState(true);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [loadingCancel, setLoadingCancel] = useState(false);
+  const [loadingStatusOrder, setLoadingStatusOrder] = useState(false);
+  const [checkOngkir, setCheckOngkir] = useState(false);
 
-  const handlePayment = async (id) => {
+  const handlePayment = async (id, ongkir) => {
     const formData = new FormData();
     formData.append("status", "settlement");
     formData.append("acceptBy", username);
+
+    if (ongkir === 0) {
+      formData.append("statusOrderan", 1);
+    } else {
+      formData.append("statusOrderan", 0);
+    }
     setLoadingPayment(true);
     try {
       axios.post(`/api/order-status/${id}`, formData).then((res) => {
@@ -35,6 +45,9 @@ export default function DetailOrderList({
             timer: 1500,
           });
           fetchItem();
+          if (action === "dashboard") {
+            fetchData();
+          }
           handleClose();
         } else if (res.data.status === 404) {
           fetchItem();
@@ -94,6 +107,7 @@ export default function DetailOrderList({
                 // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
                 window.snap.pay(res.data.snapToken, {
                   onSuccess: function (result) {
+                    console.log(checkOngkir, "123");
                     const formDataPayment = {
                       name: data.name,
                       phoneNum: data.phoneNum,
@@ -109,6 +123,7 @@ export default function DetailOrderList({
                       gross_amount: result.gross_amount,
                       paidBy: username,
                       status: result.transaction_status,
+                      statusOrderan: 0,
                     };
                     try {
                       axios
@@ -127,6 +142,9 @@ export default function DetailOrderList({
                               timer: 1500,
                             });
                             fetchItem();
+                            if (action === "dashboard") {
+                              fetchData();
+                            }
                             handleClose();
                           } else if (resp.data.status === 401) {
                             swal({
@@ -183,6 +201,7 @@ export default function DetailOrderList({
                       payment_code: result.payment_code,
                       gross_amount: result.gross_amount,
                       status: result.transaction_status,
+                      statusOrderan: 0,
                     };
                     try {
                       axios
@@ -256,6 +275,7 @@ export default function DetailOrderList({
                       payment_code: result.payment_code,
                       gross_amount: result.gross_amount,
                       status: result.transaction_status,
+                      statusOrderan: 0,
                     };
                     try {
                       axios
@@ -379,13 +399,81 @@ export default function DetailOrderList({
           if (res.data.status === 200) {
             swal({
               title: "Batalkan Pemesanan",
-              text: "Success Batalkan Pesanan",
+              text: res.data.message,
               icon: "success",
               button: false,
               timer: 2500,
             });
-            handleClose();
             fetchItem();
+            if (action === "dashboard") {
+              fetchData();
+            }
+            handleClose();
+          } else if (res.data.status === 401) {
+            swal({
+              title: "Login for Checkout",
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            localStorage.clear();
+            navigate("/login");
+            setTimeout(() => {
+              window.location.reload(false);
+            }, 2200);
+          } else if (res.data.status === 404) {
+            swal({
+              title: "Order ID Not Found!",
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            setLoadingCancel(false);
+          } else if (res.data.status === 403) {
+            swal({
+              title: res.data.message,
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            setLoading(false);
+            setLoadingCancel(false);
+          }
+        });
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleFinishOrder = async (id) => {
+    setLoadingCancel(true);
+    const formDataOrder = new FormData();
+    formDataOrder.append("finishBy", username);
+    formDataOrder.append("statusOrderan", 1);
+    try {
+      axios
+        .post(`/api/finish-order/${id}`, formDataOrder, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            swal({
+              title: "Pemesanan Selesai",
+              text: res.data.message,
+              icon: "success",
+              button: false,
+              timer: 2500,
+            });
+            fetchItem();
+            if (action === "process") {
+              fetchData();
+            }
+            handleClose();
           } else if (res.data.status === 401) {
             swal({
               title: "Login for Checkout",
@@ -539,7 +627,7 @@ export default function DetailOrderList({
                 },
               }}
               disabled={loadingPayment}
-              onClick={() => handlePayment(data.id)}
+              onClick={() => handlePayment(data.id, data.ongkir)}
             >
               {loadingPayment && (
                 <CircularProgress
@@ -554,7 +642,7 @@ export default function DetailOrderList({
                   }}
                 />
               )}
-              Transaksi Selesai
+              Pembayaran
             </Button>
           ) : data.status !== "Cancel" &&
             accessRole === "USER" &&
@@ -665,6 +753,44 @@ export default function DetailOrderList({
                 />
               )}
               Batalkan Pemesanan
+            </Button>
+          ) : (
+            ""
+          )}
+          {data.status === "settlement" &&
+          accessRole === "ADMIN" &&
+          data.ongkir !== 0 ? (
+            <Button
+              variant="contained"
+              style={{
+                background: "#302C42",
+                margin: "5px",
+                marginTop: "20px",
+                color: "white",
+                border: "1px solid",
+                borderRadius: "5px",
+                ":hover": {
+                  background: "#302C42",
+                  opacity: 0.8,
+                },
+              }}
+              disabled={loadingStatusOrder}
+              onClick={() => handleFinishOrder(data.id)}
+            >
+              {loadingStatusOrder && (
+                <CircularProgress
+                  color="inherit"
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              )}
+              Transaksi Selesai
             </Button>
           ) : (
             ""
