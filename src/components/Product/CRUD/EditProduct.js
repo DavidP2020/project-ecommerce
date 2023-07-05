@@ -26,7 +26,7 @@ export default function EditProduct({
   const [brand, setBrand] = useState([]);
   const [picture, setPicture] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [trending, setTrending] = useState(0);
+  const [trending, setTrending] = useState(data.trending);
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
@@ -47,10 +47,9 @@ export default function EditProduct({
     category_id: data.category_id,
     name: data.name,
     slug: data.slug,
-    description: data.description,
+    description: data.description ? data.description : "",
     weight: data.weight,
     unit: data.unit,
-    trending: data.trending,
     brand_id: data.brand_id,
     status: data.status,
   });
@@ -257,7 +256,7 @@ export default function EditProduct({
               <FormControlLabel
                 required
                 control={
-                  <Checkbox checked={state.trending} onChange={handleChecked} />
+                  <Checkbox checked={trending} onChange={handleChecked} />
                 }
                 label="Trending"
               />

@@ -29,7 +29,6 @@ function Post() {
 
   const fetchItem = async () => {
     try {
-      console.log(id);
       let isMountered = true;
       let res = await axios.get(`/api/fetchProduct/${id.slug}`);
 

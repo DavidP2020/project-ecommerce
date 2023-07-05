@@ -40,12 +40,12 @@ const ListColor = () => {
       minWidth: 170,
       align: "center",
     },
-    {
-      id: "image",
-      label: "Photo",
-      minWidth: 200,
-      align: "center",
-    },
+    // {
+    //   id: "image",
+    //   label: "Photo",
+    //   minWidth: 200,
+    //   align: "center",
+    // },
     {
       id: "name",
       label: "Color Name",
@@ -221,7 +221,7 @@ const ListColor = () => {
                         >
                           <TableCell align="center">{i + 1}</TableCell>
                           <TableCell align="center">{userData.id}</TableCell>
-                          <TableCell align="center">
+                          {/* <TableCell align="center">
                             {userData.photo ? (
                               <img
                                 src={`http://localhost:8000/${userData.photo}`}
@@ -232,7 +232,7 @@ const ListColor = () => {
                             ) : (
                               "No Photo"
                             )}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
                             <div
@@ -310,7 +310,7 @@ const ListColor = () => {
                         >
                           <TableCell align="center">{i + 1}</TableCell>
                           <TableCell align="center">{userData.id}</TableCell>
-                          <TableCell align="center">
+                          {/* <TableCell align="center">
                             {userData.photo ? (
                               <img
                                 src={`http://localhost:8000/${userData.photo}`}
@@ -321,7 +321,7 @@ const ListColor = () => {
                             ) : (
                               "No Photo"
                             )}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell align="center">{userData.name}</TableCell>
                           <TableCell align="center">
                             <div

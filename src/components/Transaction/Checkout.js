@@ -33,10 +33,11 @@ export default function Checkout() {
   const [phoneNum, setPhoneNum] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [state, setState] = useState("");
+  // const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [zip, setZip] = useState("");
   const [status, setStatus] = useState("");
+  const [statusOrderan, setStatusOrderan] = useState("");
   const [ongkos, setOngkos] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const setCityData = [
@@ -47,6 +48,10 @@ export default function Checkout() {
     {
       value: "Kijang",
       label: "Kijang",
+    },
+    {
+      value: "Kawal",
+      label: "Kawal",
     },
     {
       value: "Uban",
@@ -63,12 +68,14 @@ export default function Checkout() {
             setPhoneNum(resp.data.user.phoneNum);
             setEmail(resp.data.user.email);
             setAddress(resp.data.user.address);
-            setState(resp.data.user.state);
+            // setState(resp.data.user.state);
             setCity(resp.data.user.city);
             setZip(resp.data.user.zip);
             setStatus("Unpaid");
+            setStatusOrderan(0);
           } else if (accessRole === "ADMIN") {
-            setStatus("Paid");
+            setStatus("settlement");
+            setStatusOrderan(1);
           }
         }
       });
@@ -106,11 +113,13 @@ export default function Checkout() {
     if (city) {
       setOngkos(event.target.checked);
       if (city === "Tanjung Pinang") {
-        setOngkir(15000);
+        setOngkir(25000);
       } else if (city === "Kijang") {
-        setOngkir(100000);
-      } else {
+        setOngkir(40000);
+      } else if (city === "Kawal") {
         setOngkir(50000);
+      } else {
+        setOngkir(100000);
       }
 
       if (ongkos === true) {
@@ -129,6 +138,7 @@ export default function Checkout() {
   const handleChangeCity = (event) => {
     setCity(event.target.value);
     setOngkos(false);
+    setOngkir(0);
   };
 
   const handleInput = async (e, payment, total) => {
@@ -139,13 +149,12 @@ export default function Checkout() {
       email: email,
       address: address,
       city: city,
-      state: state,
       zip: zip,
       payment_mode: payment,
       gross_amount: total,
       payment_id: "",
       ongkir: ongkir,
-      statusOrderan: 0,
+      statusOrderan: ongkir === 0 ? statusOrderan : 0,
       status: status,
     };
 
@@ -234,7 +243,6 @@ export default function Checkout() {
                           email: email,
                           address: address,
                           city: city,
-                          state: state,
                           ongkir: ongkir,
                           statusOrderan: 0,
                           zip: zip,
@@ -309,7 +317,6 @@ export default function Checkout() {
                           email: email,
                           address: address,
                           city: city,
-                          state: state,
                           zip: zip,
                           ongkir: ongkir,
                           transaction_id: result.transaction_id,
@@ -383,7 +390,6 @@ export default function Checkout() {
                           email: email,
                           address: address,
                           city: city,
-                          state: state,
                           zip: zip,
                           ongkir: ongkir,
                           transaction_id: result.transaction_id,
@@ -546,7 +552,7 @@ export default function Checkout() {
                     helperText="Please enter your Name"
                     id="name"
                     name="name"
-                    label="Name"
+                    label="Nama"
                     value={name}
                     type="text"
                     onChange={(e) => setName(e.target.value)}
@@ -558,7 +564,7 @@ export default function Checkout() {
                       helperText="Please enter your Phone Number"
                       id="phoneNum"
                       name="phoneNum"
-                      label="Phone Number"
+                      label="Nomor Telepon"
                       value={phoneNum}
                       type="text"
                       onChange={(e) => setPhoneNum(e.target.value)}
@@ -580,7 +586,7 @@ export default function Checkout() {
                 <div classNam e="flexInput">
                   <textarea
                     className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none text-sm font-medium"
-                    placeholder="Address"
+                    placeholder="Alamat"
                     id="address"
                     name="address"
                     value={address}
@@ -607,7 +613,7 @@ export default function Checkout() {
                       helperText="Please enter your City"
                       id="city"
                       name="city"
-                      label="City"
+                      label="Kota"
                       value={city}
                       variant="outlined"
                       onChange={handleChangeCity}
@@ -619,7 +625,7 @@ export default function Checkout() {
                       ))}
                     </TextField>
                   </div>
-                  <div className="flexInput ml-4">
+                  {/* <div className="flexInput ml-4">
                     <TextField
                       helperText="Please enter your State"
                       id="state"
@@ -629,13 +635,13 @@ export default function Checkout() {
                       type="text"
                       onChange={(e) => setState(e.target.value)}
                     />
-                  </div>
+                  </div> */}
                   <div className="flexInput ml-4">
                     <TextField
                       helperText="Please enter your Zip Code"
                       id="zip"
                       name="zip"
-                      label="Zip Code"
+                      label="Kode Pos"
                       value={zip}
                       type="text"
                       onChange={(e) => setZip(e.target.value)}

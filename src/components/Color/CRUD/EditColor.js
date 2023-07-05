@@ -41,7 +41,7 @@ export default function EditColor({ data, handleClose, fetchItem, ...props }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("photo", picture.image);
+    // formData.append("photo", picture.image);
     formData.append("name", state.name);
     formData.append("color", state.color);
     formData.append("status", state.status);
@@ -91,7 +91,7 @@ export default function EditColor({ data, handleClose, fetchItem, ...props }) {
         {error ? (
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
             <li>{error.name}</li>
-            <li>{error.photo}</li>
+            {/* <li>{error.photo}</li> */}
           </div>
         ) : (
           ""
@@ -119,7 +119,7 @@ export default function EditColor({ data, handleClose, fetchItem, ...props }) {
               onChange={handleInputChange}
             />
           </div>
-          <div className="flexInput">
+          {/* <div className="flexInput">
             <TextField
               id="photo"
               name="photo"
@@ -132,7 +132,7 @@ export default function EditColor({ data, handleClose, fetchItem, ...props }) {
               width="200px"
               alt="photo"
             />
-          </div>
+          </div> */}
           <div className="flexInput">
             <TextField
               select

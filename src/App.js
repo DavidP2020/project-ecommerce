@@ -80,6 +80,7 @@ function App() {
 
   axios.interceptors.response.use(
     (response) => {
+      console.log(response);
       return response;
     },
     async function (error) {

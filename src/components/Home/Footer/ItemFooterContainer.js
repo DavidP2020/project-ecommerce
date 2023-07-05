@@ -18,11 +18,11 @@ export default function ItemFooterContainer() {
         <h1 className="mb-3 font-semibold text-xl">KONTAK</h1>{" "}
         <p className="text-sm font-medium pb-4">
           <div className="font-bold">Email</div>
-          <div>Abcd@gmail.com</div>
+          <div>Hartono@gmail.com</div>
         </p>
         <p className="text-sm font-normal pb-4">
           <div className="font-medium">Address</div>
-          <div>1588 South Coast Drive Costa Mesa, CA 92626</div>
+          <div>Jl. Arif Rahman Hakim No.24</div>
         </p>
         <p className="text-sm font-normal pb-4">
           <div className="font-medium">Hours</div>

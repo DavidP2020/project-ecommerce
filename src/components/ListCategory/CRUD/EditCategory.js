@@ -21,7 +21,7 @@ export default function EditCategory({
   const [state, setState] = useState({
     name: data.name,
     slug: data.slug,
-    description: data.description,
+    description: data.description ? data.description : "",
     status: data.status,
   });
   const [error, setError] = useState();

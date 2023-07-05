@@ -100,6 +100,17 @@ const AdminProduct = () => {
     boxShadow: 24,
     p: 4,
   };
+  const style1 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    bgcolor: "white",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -565,7 +576,7 @@ const AdminProduct = () => {
         className="overflow-scroll h-11/12"
       >
         <Fade in={openDelete}>
-          <Box sx={style} style={{ background: "white" }} component={"div"}>
+          <Box sx={style1} style={{ background: "white" }} component={"div"}>
             <Toolbar style={{ marginLeft: "-1rem" }}>
               <Typography component="div" sx={{ flexGrow: 2 }}>
                 <b className="text-xl">Delete Product</b>

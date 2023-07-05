@@ -10,6 +10,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Profile from "../Home/Profile/Profile";
 import axios from "axios";
 import ChangePassword from "../Setting/ChangePassword";
+import About from "../Modal/About";
 
 export default function NavbarPanel() {
   const style = {
@@ -31,6 +32,7 @@ export default function NavbarPanel() {
   const accessEmail = localStorage.getItem("auth-email");
   const [profile, setProfile] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openAbout, setOpenAbout] = useState(false);
   const [openChange, setOpenChange] = useState(false);
   const handleOpenLogout = () => {
     setOpenLogout(true);
@@ -46,6 +48,11 @@ export default function NavbarPanel() {
     setOpenEdit(true);
   };
   const handleCloseEdit = () => setOpenEdit(false);
+
+  const handleOpenAbout = () => {
+    setOpenAbout(true);
+  };
+  const handleCloseAbout = () => setOpenAbout(false);
 
   const handleClickPop = (event) => {
     event.preventDefault();
@@ -231,7 +238,10 @@ export default function NavbarPanel() {
                       </Fade>
                     </Modal>
                     <div className="popOver">
-                      <button className="nav-links-sign" onClick={handleLogout}>
+                      <button
+                        className="nav-links-sign"
+                        onClick={handleOpenAbout}
+                      >
                         <i
                           className="mr-6 m-2 fas fa-sharp fa-regular fa-circle-info"
                           aria-hidden="true"
@@ -239,6 +249,43 @@ export default function NavbarPanel() {
                         About
                       </button>
                     </div>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={openAbout}
+                      onClose={handleCloseAbout}
+                      closeAfterTransition
+                      className="overflow-scroll h-11/12"
+                    >
+                      <Fade in={openAbout}>
+                        <Box
+                          sx={style}
+                          style={{
+                            background: "white",
+                            width: "800",
+                          }}
+                          component={"div"}
+                        >
+                          <Toolbar style={{ marginLeft: "-1rem" }}>
+                            <Typography component="div" sx={{ flexGrow: 2 }}>
+                              <b className="text-xl">About</b>
+                            </Typography>
+                            <i
+                              className="icon fa fa-times"
+                              aria-hidden="true"
+                              onClick={handleCloseAbout}
+                            ></i>
+                          </Toolbar>
+                          <Typography
+                            id="transition-modal-description"
+                            sx={{ mt: 2 }}
+                            component={"div"}
+                          >
+                            <About handleClose={handleCloseAbout} />
+                          </Typography>
+                        </Box>
+                      </Fade>
+                    </Modal>
                     <div className="popOver">
                       <button
                         className="nav-links-sign"

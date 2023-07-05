@@ -52,6 +52,10 @@ export default function Profile({
       label: "Kijang",
     },
     {
+      value: "Kawal",
+      label: "Kawal",
+    },
+    {
       value: "Uban",
       label: "Uban",
     },
@@ -145,7 +149,7 @@ export default function Profile({
                 id="name"
                 name="name"
                 value={state.name}
-                label="Name"
+                label="Nama"
                 type="text"
                 onChange={handleInputChange}
               />
@@ -153,7 +157,7 @@ export default function Profile({
             <div className="flexInput">
               <TextField
                 select
-                label="Gender"
+                label="Jenis Kelamin"
                 helperText="Please select your Gender"
                 name="gender"
                 value={state.gender}
@@ -172,7 +176,7 @@ export default function Profile({
                 helperText="Please enter your Phone Number"
                 id="phoneNum"
                 name="phoneNum"
-                label="Phone Number"
+                label="Nomor Telepon"
                 value={state.phoneNum}
                 type="text"
                 onChange={handleInputChange}
@@ -183,7 +187,7 @@ export default function Profile({
                 helperText="Please enter your Place of Birth"
                 id="place_of_birth"
                 name="place_of_birth"
-                label="Place of Birth"
+                label="Tempat Lahir"
                 value={state.place_of_birth}
                 type="text"
                 onChange={handleInputChange}
@@ -194,7 +198,7 @@ export default function Profile({
                 helperText="Please enter your Date of Birth"
                 id="date_of_birth"
                 name="date_of_birth"
-                label="Date of Birth"
+                label="Tanggal Lahir"
                 value={state.date_of_birth}
                 type="date"
                 onChange={handleInputChange}
@@ -203,7 +207,7 @@ export default function Profile({
             <div className="flexInput">
               <textarea
                 className="h-28 w-full appearance-none block border border-slate-600 rounded-lg py-4 px-3 focus:outline-none"
-                placeholder="Description"
+                placeholder="Alamat"
                 id="address"
                 name="address"
                 value={state.address}
@@ -228,7 +232,7 @@ export default function Profile({
                 helperText="Please enter your State"
                 id="state"
                 name="state"
-                label="State"
+                label="Kewarganegaraan"
                 value={state.state}
                 type="text"
                 onChange={handleInputChange}
@@ -240,7 +244,7 @@ export default function Profile({
                 helperText="Please enter your City"
                 id="city"
                 name="city"
-                label="City"
+                label="Kota"
                 value={state.city}
                 variant="outlined"
                 onChange={handleInputChange}
@@ -257,7 +261,7 @@ export default function Profile({
                 helperText="Please enter your Zip"
                 id="zip"
                 name="zip"
-                label="Zip"
+                label="KOde Pos"
                 value={state.zip}
                 type="text"
                 onChange={handleInputChange}

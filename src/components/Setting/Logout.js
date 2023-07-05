@@ -1,13 +1,16 @@
-import React from "react";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 export default function Logout({ handleClose, ...props }) {
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("auth-token");
+  const [loading, setLoading] = useState(false);
   const logOut = (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       // axios.get("/sanctum/csrf-cookie").then((response) => {
       axios
@@ -22,6 +25,18 @@ export default function Logout({ handleClose, ...props }) {
             alert(resp.data.message);
             handleClose();
             navigate("/");
+            localStorage.clear();
+            window.location.reload(false);
+          } else {
+            swal({
+              title: "Error!",
+              text: "Unauthorized",
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            setLoading(false);
+            handleClose();
             localStorage.clear();
             window.location.reload(false);
           }
@@ -55,8 +70,22 @@ export default function Logout({ handleClose, ...props }) {
           <Button
             style={{ background: "red" }}
             variant="contained"
+            disabled={loading}
             onClick={logOut}
           >
+            {loading && (
+              <CircularProgress
+                color="inherit"
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             Logout
           </Button>
         </div>

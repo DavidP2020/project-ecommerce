@@ -69,7 +69,11 @@ export default function Cart() {
           button: false,
           timer: 2000,
         });
+        localStorage.clear();
         navigate("/login");
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 2200);
       }
     } catch (error) {
       console.log(error);

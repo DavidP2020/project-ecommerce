@@ -758,8 +758,8 @@ export default function DetailOrderList({
             ""
           )}
           {data.status === "settlement" &&
-          accessRole === "ADMIN" &&
-          data.ongkir !== 0 ? (
+          data.statusOrderan === 0 &&
+          accessRole === "ADMIN" ? (
             <Button
               variant="contained"
               style={{

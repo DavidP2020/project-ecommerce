@@ -1,5 +1,5 @@
-import React from "react";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
 import { Box } from "@mui/system";
 import swal from "sweetalert";
 import axios from "axios";
@@ -11,13 +11,13 @@ export default function DeleteProduct({
   todo,
   ...props
 }) {
+  const [loading, setLoading] = useState(false);
   const handleDelete = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       axios.delete(`/api/products/${data.id}`).then((res) => {
         if (res.data.status === 200) {
-          fetchItem();
-          handleClose();
           swal({
             title: "Success!",
             text: res.data.message,
@@ -25,9 +25,9 @@ export default function DeleteProduct({
             button: false,
             timer: 1500,
           });
-        } else if (res.data.status === 422) {
           fetchItem();
           handleClose();
+        } else if (res.data.status === 422) {
           swal({
             title: "Error!",
             text: res.data.error,
@@ -35,9 +35,10 @@ export default function DeleteProduct({
             button: false,
             timer: 1500,
           });
-        } else if (res.data.status === 404) {
+          setLoading(false);
           fetchItem();
           handleClose();
+        } else if (res.data.status === 404) {
           swal({
             title: "Error!",
             text: res.data.message,
@@ -45,6 +46,9 @@ export default function DeleteProduct({
             button: false,
             timer: 1500,
           });
+          setLoading(false);
+          fetchItem();
+          handleClose();
         }
       });
     } catch (err) {
@@ -78,8 +82,22 @@ export default function DeleteProduct({
           <Button
             style={{ background: "red" }}
             variant="contained"
+            disabled={loading}
             onClick={handleDelete}
           >
+            {loading && (
+              <CircularProgress
+                color="inherit"
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                }}
+              />
+            )}
             Delete
           </Button>
         </div>
