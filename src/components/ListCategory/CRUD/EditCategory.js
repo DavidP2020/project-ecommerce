@@ -79,8 +79,15 @@ export default function EditCategory({
             setError(res.data.error);
             setLoading(false);
           } else if (res.data.status === 404) {
-            setError(res.data.message);
+            swal({
+              title: "Error!",
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
             setLoading(false);
+            handleClose();
           }
         });
     } catch (err) {

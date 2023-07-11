@@ -66,47 +66,52 @@ export default function Profile({
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", state.name);
-    formData.append("gender", state.gender);
-    formData.append("phoneNum", state.phoneNum);
-    formData.append("place_of_birth", state.place_of_birth);
-    formData.append("date_of_birth", state.date_of_birth);
-    formData.append("address", state.address);
-    formData.append("state", state.state);
-    formData.append("city", state.city);
-    formData.append("zip", state.zip);
-    formData.append("status", state.status);
+    const formData = {
+      name: state.name,
+      gender: state.gender,
+      phoneNum: state.phoneNum,
+      place_of_birth: state.place_of_birth,
+      date_of_birth: state.date_of_birth,
+      address: state.address,
+      state: state.state,
+      city: state.city,
+      zip: state.zip,
+      status: state.status,
+    };
     setLoading(true);
     try {
-      axios
-        .post(`/api/profile/${data.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.status === 200) {
-            swal({
-              title: "Success!",
-              text: res.data.message,
-              icon: "success",
-              button: false,
-              timer: 1500,
-            });
-            setError("");
-            fetchItem();
+      axios.put(`/api/profile/${data.id}`, formData).then((res) => {
+        if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+          setError("");
+          fetchItem();
 
-            if (ctr === "user") {
-              localStorage.setItem("auth-name", state.name);
-            }
-            handleClose();
-          } else if (res.data.status === 403) {
-            setError(res.data.validation_errors);
-            console.log(res.data.validation_errors);
-            setLoading(false);
+          if (ctr === "user") {
+            localStorage.setItem("auth-name", state.name);
           }
-        });
+          handleClose();
+        } else if (res.data.status === 403) {
+          setError(res.data.validation_errors);
+          console.log(res.data.validation_errors);
+          setLoading(false);
+        } else if (res.data.status === 404) {
+          swal({
+            title: "Error!",
+            text: res.data.message,
+            icon: "error",
+            button: false,
+            timer: 1500,
+          });
+          setLoading(false);
+          handleClose();
+        }
+      });
     } catch (err) {
       alert(err.message);
     }

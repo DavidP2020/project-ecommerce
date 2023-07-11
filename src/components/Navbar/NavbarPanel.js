@@ -24,6 +24,7 @@ export default function NavbarPanel() {
     boxShadow: 24,
     p: 4,
   };
+  const accessRole = localStorage.getItem("auth-role");
   const [navbar, setNavbar] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogout, setOpenLogout] = useState(false);
@@ -66,11 +67,6 @@ export default function NavbarPanel() {
   const openPop = Boolean(anchorEl);
   const idPop = openPop ? "simple-popover" : undefined;
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
-    window.location.reload(false);
-  };
   const fetchItem = () => {
     try {
       axios.get(`/api/profile/${accessEmail}`).then((resp) => {
@@ -143,20 +139,26 @@ export default function NavbarPanel() {
             <div className="flex flex-col">
               <div className="flex gap-9">
                 <ul className="text-sm font-medium flex gap-2">
-                  <li>
-                    <Link to="/wishlist">
-                      <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                        <FavoriteIcon />
-                      </i>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/cart">
-                      <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                        <ShoppingCartCheckoutIcon />
-                      </i>
-                    </Link>
-                  </li>
+                  {accessRole !== "OWNER" ? (
+                    <>
+                      <li>
+                        <Link to="/wishlist">
+                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                            <FavoriteIcon />
+                          </i>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/cart">
+                          <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                            <ShoppingCartCheckoutIcon />
+                          </i>
+                        </Link>
+                      </li>
+                    </>
+                  ) : (
+                    ""
+                  )}
 
                   {accessToken ? (
                     <li>
@@ -404,37 +406,42 @@ export default function NavbarPanel() {
         <ul className="text-sm font-semibold uppercase flex flex-col gap-8">
           <ItemNavbarContainer ctr={"2"} />
 
-          <div className="flex px-6 font-bold">
-            <div className="flex-row">Lainnya</div>
-            <ul className="flex justify-end items-end w-full gap-2">
-              <li>
-                <Link to="/wishlist">
-                  <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                    <FavoriteIcon />
-                  </i>
-                </Link>
-              </li>
-              <li>
-                <Link to="/cart">
-                  <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
-                    <ShoppingCartCheckoutIcon />
-                  </i>
-                </Link>
-              </li>
-              {accessToken ? (
+          {accessRole !== "Owner" ? (
+            <div className="flex px-6 font-bold">
+              <div className="flex-row">Lainnya</div>
+              <ul className="flex justify-end items-end w-full gap-2">
                 <li>
-                  <i
-                    className="text-xl hover:opacity-70 hover:scale-125"
-                    onClick={(e) => handleClickPop(e)}
-                  >
-                    <SettingsIcon />
-                  </i>
+                  <Link to="/wishlist">
+                    <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                      <FavoriteIcon />
+                    </i>
+                  </Link>
                 </li>
-              ) : (
-                ""
-              )}
-            </ul>
-          </div>
+                <li>
+                  <Link to="/cart">
+                    <i className="text-xl hover:opacity-70 hover:scale-125 mr-3">
+                      <ShoppingCartCheckoutIcon />
+                    </i>
+                  </Link>
+                </li>
+                {accessToken ? (
+                  <li>
+                    <i
+                      className="text-xl hover:opacity-70 hover:scale-125"
+                      onClick={(e) => handleClickPop(e)}
+                    >
+                      <SettingsIcon />
+                    </i>
+                  </li>
+                ) : (
+                  ""
+                )}
+              </ul>
+            </div>
+          ) : (
+            ""
+          )}
+
           <ul className="text-xs font-medium flex-col w-full -mt-8 mb-4">
             <li className="nav-links">
               <Link to="/order" className="hover:underline">

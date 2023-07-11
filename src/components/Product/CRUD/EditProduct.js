@@ -119,6 +119,16 @@ export default function EditProduct({
           } else if (res.data.status === 422) {
             setError(res.data.validation_errors);
             setLoading(false);
+          } else if (res.data.status === 404) {
+            swal({
+              title: "Error!",
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            setLoading(false);
+            handleClose();
           }
         });
     } catch (err) {

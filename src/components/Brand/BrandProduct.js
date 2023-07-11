@@ -78,55 +78,62 @@ function Post() {
           <h1 className="title-text text-black uppercase font-extrabold text-3xl">
             {id.name}
           </h1>
-          <div className="flex-col">
-            <div className="flex sm:flex-row flex-wrap flex-col justify-center justify-items-center items-center gap-2 border">
-              {product
-                .slice((page - 1) * itemsPerPage, page * itemsPerPage)
-                .map((data, i) => {
-                  return (
-                    <div key={i}>
-                      {data.product_color ? (
-                        <Link
-                          to={`/category/${data.category.slug}/${data.slug}`}
-                        >
-                          <div className="card mt-10">
-                            <img
-                              src={`http://localhost:8000/${data.photo}`}
-                              alt="photo"
-                              className="h-72 object-cover"
-                            />
+          {product.length !== 0 ? (
+            <div className="flex-col">
+              <div className="flex sm:flex-row flex-wrap flex-col justify-center justify-items-center items-center gap-2 border">
+                {product
+                  .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                  .map((data, i) => {
+                    return (
+                      <div key={i}>
+                        {data.product_color ? (
+                          <Link
+                            to={`/category/${data.category.slug}/${data.slug}`}
+                          >
+                            <div className="card mt-10">
+                              <img
+                                src={`http://localhost:8000/${data.photo}`}
+                                alt="photo"
+                                className="h-72 object-cover"
+                              />
 
-                            <div className="p-5 flex-col gap-3">
-                              <div className="flex flex-row justify-between items-center">
-                                <div className="font-normal text-xs">
-                                  {data.category.name}
+                              <div className="p-5 flex-col gap-3">
+                                <div className="flex flex-row justify-between items-center">
+                                  <div className="font-normal text-xs">
+                                    {data.category.name}
+                                  </div>
+                                  <div className="font-normal text-xs">
+                                    {data.weight} Kg
+                                  </div>
                                 </div>
-                                <div className="font-normal text-xs">
-                                  {data.weight} Kg
+                                <div className="font-bold text-2xl my-2">
+                                  {data.name}
                                 </div>
-                              </div>
-                              <div className="font-bold text-2xl my-2">
-                                {data.name}
-                              </div>
-                              <div className="font-medium text-xs text-white my-3">
-                                <span className="bg-primary px-4 py-1 rounded-xl">
-                                  {data.brand.name}
-                                </span>
-                              </div>
-                              <div className="font-extrabold text-xl mt-2 text-red-500">
-                                Rp. {numberWithCommas(data.product_color.price)}
+                                <div className="font-medium text-xs text-white my-3">
+                                  <span className="bg-primary px-4 py-1 rounded-xl">
+                                    {data.brand.name}
+                                  </span>
+                                </div>
+                                <div className="font-extrabold text-xl mt-2 text-red-500">
+                                  Rp.{" "}
+                                  {numberWithCommas(data.product_color.price)}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </Link>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  );
-                })}
+                          </Link>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center h-screen">
+              No Data Found
+            </div>
+          )}
         </div>
       )}
     </>

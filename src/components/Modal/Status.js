@@ -17,11 +17,12 @@ export default function Status({
   const handleStatus = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("status", status);
+    const formData = {
+      status: status,
+    };
     setLoading(true);
     try {
-      axios.post(`/api/user-status/${data.id}`, formData).then((res) => {
+      axios.put(`/api/user-status/${data.id}`, formData).then((res) => {
         if (res.data.status === 200) {
           fetchItem();
           handleClose();

@@ -82,8 +82,6 @@ export default function Cart() {
   function updateCart(cart_id, scope) {
     try {
       axios.put(`/api/cart-updateQuantity/${cart_id}/${scope}`).then((res) => {
-        console.log(res.data);
-
         if (res.data.status === 200) {
           fetchItem();
           swal({

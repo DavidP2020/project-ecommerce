@@ -1,4 +1,4 @@
-export const AdminPages = [
+export const adminPages = [
   { name: "Home", link: "/" },
   { name: "Dashboard", link: "/dashboard" },
   { name: "Category", link: "/category" },
@@ -13,6 +13,11 @@ export const userPages = [
   { name: "Dashboard", link: "/dashboard" },
   { name: "Category", link: "/category" },
   { name: "Brand", link: "/brands" },
+];
+
+export const ownerPages = [
+  { name: "Home", link: "/" },
+  { name: "Dashboard", link: "/dashboard" },
 ];
 
 export const pages = [

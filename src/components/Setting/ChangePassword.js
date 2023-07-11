@@ -16,69 +16,48 @@ export default function ChangePassword({
   ...props
 }) {
   console.log(data);
-  const [state, setState] = useState({
-    oldPass: "",
-    password: "",
-    confirm: "",
-  });
+  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [password_confirmation, setConfirmPassword] = useState("");
+
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-
-  const handleInputChange = (e) => {
-    let { name, value } = e.target;
-    setState({ ...state, [name]: value });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    if (state.oldPass === "") {
-      setError("Password Lama Harus Diisi");
-    } else if (state.password === "") {
-      setError("Password Harus Diisi");
-    } else if (state.confirm === "") {
-      setError("Konfrimasi Password Harus Diisi");
-    } else if (state.password.length < 8 || state.oldPass.length < 8) {
-      setError("Minimal 8 Karakter");
-    } else {
-      formData.append("oldPass", state.oldPass);
-      if (state.password === state.confirm) {
-        formData.append("password", state.password);
-        setLoading(true);
-        try {
-          axios
-            .post(`/api/change-pass/${data}`, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((res) => {
-              if (res.data.status === 200) {
-                swal({
-                  title: "Success!",
-                  text: res.data.message,
-                  icon: "success",
-                  button: false,
-                  timer: 1500,
-                });
-                setError("");
-                handleClose();
-                fetchItem();
-              } else if (res.data.status === 403) {
-                setError(res.data.validation_errors);
-                setLoading(false);
-              } else if (res.data.status === 404) {
-                setError(res.data.validation_errors);
-                setLoading(false);
-              }
-            });
-        } catch (err) {
-          alert(err.message);
+    const formData = {
+      oldPassword: oldPassword,
+      password: password,
+      password_confirmation: password_confirmation,
+    };
+    setLoading(true);
+    try {
+      axios.put(`/api/change-pass/${data}`, formData).then((res) => {
+        if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+          setError("");
+          handleClose();
+          fetchItem();
+        } else if (res.data.status === 402) {
+          setError(res.data.message);
+          setLoading(false);
+        } else if (res.data.status === 403) {
+          setError(res.data.validation_errors);
+          setLoading(false);
+        } else if (res.data.status === 404) {
+          alert(res.data.message);
+          setLoading(false);
         }
-      } else {
-        setError("Password Tidak Sama");
-      }
+      });
+    } catch (err) {
+      alert(err.message);
     }
   };
   return (
@@ -94,9 +73,9 @@ export default function ChangePassword({
         {error ? (
           <div className="text-left bg-red-500 w-full text-white p-4 mt-2 mb-4 max-h-28 overflow-scroll">
             <ul>
-              <li>{error}</li>
+              <li>{error.errors} </li>
+              <li>{error.oldPassword} </li>
               <li>{error.password}</li>
-              <li>{error.oldPass}</li>
             </ul>
           </div>
         ) : (
@@ -108,9 +87,8 @@ export default function ChangePassword({
               id="oldPass"
               name="oldPass"
               label="Old Password"
-              value={state.oldPass}
               type="password"
-              onChange={handleInputChange}
+              onChange={(e) => setOldPassword(e.target.value)}
               required
             />
           </div>
@@ -119,20 +97,18 @@ export default function ChangePassword({
               id="password"
               name="password"
               label="Password"
-              value={state.password}
               type="password"
-              onChange={handleInputChange}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
           <div className="flexInput">
             <TextField
-              id="confirm"
-              name="confirm"
+              id="password_confirmation"
+              name="password_confirmation"
               label="Confirm Password"
-              value={state.confirm}
               type="password"
-              onChange={handleInputChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>

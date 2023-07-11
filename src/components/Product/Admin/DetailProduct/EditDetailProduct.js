@@ -44,22 +44,19 @@ export default function EditDetailProduct({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("product_id", state.product_id);
-    formData.append("color_id", state.color_id);
-    formData.append("qty", state.qty);
-    formData.append("original_price", state.original_price);
-    formData.append("price", state.price);
-    formData.append("status", state.status);
+    const formData = {
+      product_id: state.product_id,
+      color_id: state.color_id,
+      qty: state.qty,
+      original_price: state.original_price,
+      price: state.price,
+      status: state.status,
+    };
     setLoading(true);
 
     try {
       axios
-        .post(`/api/update-detail-products/${data.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .put(`/api/update-detail-products/${data.id}`, formData)
         .then((res) => {
           if (res.data.status === 200) {
             swal({
@@ -83,6 +80,16 @@ export default function EditDetailProduct({
           } else if (res.data.status === 403) {
             setError(res.data.validation_errors);
             setLoading(false);
+          } else if (res.data.status === 404) {
+            swal({
+              title: "Error!",
+              text: res.data.message,
+              icon: "error",
+              button: false,
+              timer: 1500,
+            });
+            setLoading(false);
+            handleClose();
           }
         });
     } catch (err) {

@@ -1,4 +1,11 @@
-import { AdminPages, Other, userPages, pages, Icons } from "../Menu";
+import {
+  Other,
+  userPages,
+  pages,
+  Icons,
+  adminPages,
+  ownerPages,
+} from "../Menu";
 import Item from "./Item";
 import { Link } from "react-router-dom";
 import SocialIcon from "../SocialIcon";
@@ -8,9 +15,11 @@ export default function ItemFooterContainer() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:px-8 px-5 py-16">
       {accessRole === "ADMIN" ? (
-        <Item Links={AdminPages} title="HALAMAN" />
-      ) : accessRole === "ADMIN" ? (
+        <Item Links={adminPages} title="HALAMAN" />
+      ) : accessRole === "USER" ? (
         <Item Links={userPages} title="HALAMAN" />
+      ) : accessRole === "OWNER" ? (
+        <Item Links={ownerPages} title="HALAMAN" />
       ) : (
         <Item Links={pages} title="HALAMAN" />
       )}

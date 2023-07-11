@@ -17,7 +17,7 @@ export default function Login() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 450,
+    width: 460,
     bgcolor: "white",
     border: "2px solid #000",
     boxShadow: 24,

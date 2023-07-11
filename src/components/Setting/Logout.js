@@ -68,7 +68,13 @@ export default function Logout({ handleClose, ...props }) {
             Cancel
           </Button>
           <Button
-            style={{ background: "red" }}
+            sx={{
+              background: "red",
+              ":hover": {
+                background: "red",
+                opacity: 0.8,
+              },
+            }}
             variant="contained"
             disabled={loading}
             onClick={logOut}

@@ -476,7 +476,7 @@ const AdminProduct = () => {
         className="overflow-scroll h-11/12"
       >
         <Fade in={openDesc}>
-          <Box sx={style} style={{ background: "white" }} component={"div"}>
+          <Box sx={style1} style={{ background: "white" }} component={"div"}>
             <Toolbar style={{ marginLeft: "-1rem" }}>
               <Typography component="div" sx={{ flexGrow: 2 }}>
                 <b className="text-xl">Description Product</b>

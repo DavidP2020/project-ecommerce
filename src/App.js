@@ -25,7 +25,9 @@ import Shopnow from "./components/Product/Shopnow";
 import BrandPage from "./components/Brand/BrandPage";
 import BrandProduct from "./components/Brand/BrandProduct";
 import Wishlist from "./pages/Wishlist";
+import Laporan_Tahunan from "./components/Laporan/Laporan_Tahunan";
 import User from "./pages/User";
+
 function App() {
   const [isLogin, setLogin] = useState(false);
   const navigate = useNavigate();
@@ -84,7 +86,6 @@ function App() {
       return response;
     },
     async function (error) {
-      console.log("sad");
       const originalRequest = error.config;
       if (error.response.status === 403 && !originalRequest._retry) {
         originalRequest._retry = true;
@@ -144,11 +145,7 @@ function App() {
   return (
     <>
       <NavbarPanel />
-      {/* <div className="flex"> */}
-      {/* <Sidebar /> */}
-
       {!isLogin ? (
-        // <div className="flex flex-wrap items-center justify-center h-screen w-screen overflow-scroll">
         <>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -172,7 +169,6 @@ function App() {
           <Footer />
         </>
       ) : (
-        // </div>
         <>
           {accessRole === "ADMIN" ? (
             <Routes>
@@ -201,6 +197,30 @@ function App() {
               <Route path="/color" element={<Color />} />
               <Route path="/location" element={<Location />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route
+                path="/laporan-tahunan/:year"
+                element={<Laporan_Tahunan />}
+              />
+            </Routes>
+          ) : accessRole === "OWNER" ? (
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/laporan-tahunan/:year"
+                element={<Laporan_Tahunan />}
+              />
+              <Route path="/shop-now" element={<Shopnow />} />
+              <Route path="/location" element={<Location />} />
+              <Route path="/about-us" element={<Aboutus />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/brands" element={<BrandPage />} />
+              <Route path="/brands/:name" element={<BrandProduct />} />{" "}
+              <Route path="/category/:slug" element={<ListProduct />} />
+              <Route
+                path="/category/:slug/:product"
+                element={<DetailProduct />}
+              />
             </Routes>
           ) : (
             <Routes>
@@ -226,11 +246,7 @@ function App() {
 
           <Footer />
         </>
-        // <div className="flex flex-wrap items-center justify-center h-screen w-screen overflow-scroll">
-        // {/* <Navbar /> */}
-        // </div>
       )}
-      {/* </div> */}
     </>
   );
 }

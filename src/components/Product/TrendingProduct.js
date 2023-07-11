@@ -78,6 +78,7 @@ export default function TrendingProduct() {
         if (res.data.status === 200) {
           setProduct(res.data.product);
           setTotal(res.data.total);
+          console.log(res.data);
         } else if (res.data.status === 404) {
           navigate.push("/category");
           swal("Warning", res.data.message, "error");
@@ -99,67 +100,71 @@ export default function TrendingProduct() {
   return (
     <div className="mx-10 my-24">
       <section className="flex w-full justify-start mb-10">
-        <h1 className="text-2xl font-bold uppercase mt-4 lg:mt-0">
-          Trending | Best Seller
-        </h1>
+        <h1 className="text-2xl font-bold uppercase mt-4 lg:mt-0">Trending</h1>
       </section>
       <div className="flex flex-col gap-2 bg-white ">
         <div className="sliders">
-          <Slider {...settings}>
-            {product.map((data, i) => {
-              return (
-                <div key={i}>
-                  {data.product_color ? (
-                    <div className="carded  my-10">
-                      <img
-                        src={`http://localhost:8000/${data.photo}`}
-                        alt="photo"
-                        className="w-full h-96 object-cover"
-                      />
-                      <div className="p-5 flex-col gap-3">
-                        <div className="flex flex-row justify-between items-center">
-                          <div className="font-normal text-xs">
-                            {data.category.name}
+          {product.length !== 0 ? (
+            <Slider {...settings}>
+              {product.map((data, i) => {
+                return (
+                  <div key={i}>
+                    {data.product_color ? (
+                      <div className="carded  my-10">
+                        <img
+                          src={`http://localhost:8000/${data.photo}`}
+                          alt="photo"
+                          className="w-full h-96 object-cover"
+                        />
+                        <div className="p-5 flex-col gap-3">
+                          <div className="flex flex-row justify-between items-center">
+                            <div className="font-normal text-xs">
+                              {data.category.name}
+                            </div>
+                            <div className="font-normal text-xs">
+                              {data.weight} {data.unit}
+                            </div>
                           </div>
-                          <div className="font-normal text-xs">
-                            {data.weight} {data.unit}
+                          <div className="font-bold text-2xl my-2">
+                            {data.name}
                           </div>
-                        </div>
-                        <div className="font-bold text-2xl my-2">
-                          {data.name}
-                        </div>
-                        <div className="font-medium text-xs text-white my-3">
-                          <span className="bg-primary px-4 py-1 rounded-xl">
-                            {data.brand.name}
-                          </span>
-                        </div>
-                        <div className="font-extrabold text-xl mt-2 text-red-500">
-                          Rp. {numberWithCommas(data.product_color.price)}
-                        </div>
-                        <div className="text-gray-500 font-medium text-xs mt-2">
-                          {total} Item left
-                        </div>
-                        <div className="text-center mt-4">
-                          <Link
-                            to={`/category/${data.category.slug}/${data.slug}`}
-                          >
-                            <button
-                              className="text-black text-sm font-medium px-4 py-2 rounded-md mx-4 border-solid border-4"
-                              type="button"
+                          <div className="font-medium text-xs text-white my-3">
+                            <span className="bg-primary px-4 py-1 rounded-xl">
+                              {data.brand.name}
+                            </span>
+                          </div>
+                          <div className="font-extrabold text-xl mt-2 text-red-500">
+                            Rp. {numberWithCommas(data.product_color.price)}
+                          </div>
+                          <div className="text-gray-500 font-medium text-xs mt-2">
+                            {total} Item left
+                          </div>
+                          <div className="text-center mt-4">
+                            <Link
+                              to={`/category/${data.category.slug}/${data.slug}`}
                             >
-                              View More
-                            </button>
-                          </Link>
+                              <button
+                                className="text-black text-sm font-medium px-4 py-2 rounded-md mx-4 border-solid border-4"
+                                type="button"
+                              >
+                                View More
+                              </button>
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              );
-            })}
-          </Slider>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                );
+              })}
+            </Slider>
+          ) : (
+            <div className="flex flex-col justify-center items-center h-40">
+              Trending Not Found
+            </div>
+          )}
         </div>
       </div>
     </div>

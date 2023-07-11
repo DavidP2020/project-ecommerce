@@ -34,45 +34,51 @@ export default function EditColor({ data, handleClose, fetchItem, ...props }) {
     setState({ ...state, [name]: value });
   };
 
-  const handleImage = (e) => {
-    setPicture({ image: e.target.files[0] });
-  };
+  // const handleImage = (e) => {
+  //   setPicture({ image: e.target.files[0] });
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
+    // const formData = new FormData();
     // formData.append("photo", picture.image);
-    formData.append("name", state.name);
-    formData.append("color", state.color);
-    formData.append("status", state.status);
+    // formData.append("name", state.name);
+    // formData.append("color", state.color);
+    // formData.append("status", state.status);
+    const formData = {
+      name: state.name,
+      color: state.color,
+      status: state.status,
+    };
     setLoading(true);
     try {
-      axios
-        .post(`/api/color/${data.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.status === 200) {
-            swal({
-              title: "Success!",
-              text: res.data.message,
-              icon: "success",
-              button: false,
-              timer: 1500,
-            });
-            setError("");
-            fetchItem();
-            handleClose();
-          } else if (res.data.status === 422) {
-            setError(res.data.error);
-            setLoading(false);
-          } else if (res.data.status === 404) {
-            setError(res.data.message);
-            setLoading(false);
-          }
-        });
+      axios.put(`/api/color/${data.id}`, formData).then((res) => {
+        if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+          setError("");
+          fetchItem();
+          handleClose();
+        } else if (res.data.status === 422) {
+          setError(res.data.error);
+          setLoading(false);
+        } else if (res.data.status === 404) {
+          swal({
+            title: "Error!",
+            text: res.data.message,
+            icon: "error",
+            button: false,
+            timer: 1500,
+          });
+          setLoading(false);
+          handleClose();
+        }
+      });
     } catch (err) {
       alert(err.message);
     }

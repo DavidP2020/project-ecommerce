@@ -95,36 +95,42 @@ export default function CategoryPage() {
       </section>
       <div className="flex flex-col gap-2 text-center ">
         <div className="slider w-full">
-          <Slider {...settings}>
-            {listPost.map((data, i) => {
-              return (
-                <div key={i}>
-                  <div className="carded">
-                    <div className="relative">
-                      <img
-                        src={`http://localhost:8000/${data.photo}`}
-                        alt="photo"
-                        width={350}
-                        height={350}
-                        className="w-full h-96 object-cover"
-                      />
-                      <div className="h-96 w-full bg-black colorCenter"></div>
-                      <Link to={`/category/${data.slug}`}>
-                        <button className="textCenter bg-black rounded-md text-white px-16 py-2 -mt-4 hover:opacity-70 w-3/4 border-solid border-white border-2">
-                          {data.name}
-                        </button>
-                      </Link>
-                      <div className="p-5 flex-col gap-3">
-                        <h2 className="product-title text-center font-medium">
-                          {data.name}
-                        </h2>
+          {listPost !== 0 ? (
+            <Slider {...settings}>
+              {listPost.map((data, i) => {
+                return (
+                  <div key={i}>
+                    <div className="carded">
+                      <div className="relative">
+                        <img
+                          src={`http://localhost:8000/${data.photo}`}
+                          alt="photo"
+                          width={350}
+                          height={350}
+                          className="w-full h-96 object-cover"
+                        />
+                        <div className="h-96 w-full bg-black colorCenter"></div>
+                        <Link to={`/category/${data.slug}`}>
+                          <button className="textCenter bg-black rounded-md text-white px-16 py-2 -mt-4 hover:opacity-70 w-3/4 border-solid border-white border-2">
+                            {data.name}
+                          </button>
+                        </Link>
+                        <div className="p-5 flex-col gap-3">
+                          <h2 className="product-title text-center font-medium">
+                            {data.name}
+                          </h2>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </Slider>
+                );
+              })}
+            </Slider>
+          ) : (
+            <div className="flex flex-col justify-center items-center h-40">
+              Category Not Found
+            </div>
+          )}
         </div>
       </div>
     </div>

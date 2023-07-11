@@ -30,6 +30,7 @@ export default function DetailOrderList({
 
     if (ongkir === 0) {
       formData.append("statusOrderan", 1);
+      formData.append("finishBy", "System");
     } else {
       formData.append("statusOrderan", 0);
     }
@@ -552,6 +553,13 @@ export default function DetailOrderList({
                       <div>Di Bayar Oleh : {data.paidBy}</div>
                     ) : data.acceptBy && data.status === "settlement" ? (
                       <div>Di Terima Oleh : {data.acceptBy}</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <div>
+                    {data.finishBy && data.statusOrderan === 1 ? (
+                      <div>Di Selesaikan Oleh : {data.finishBy}</div>
                     ) : (
                       ""
                     )}

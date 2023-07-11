@@ -125,7 +125,7 @@ const ProcessOrder = ({ fetchData, action, ...props }) => {
 
   return (
     <div>
-      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum Di Proses</h2>
+      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum di Proses</h2>
 
       {isLoading ? (
         <div className="tableLoad">

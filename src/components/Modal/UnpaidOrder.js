@@ -19,7 +19,7 @@ import "../../App.css";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import swal from "sweetalert";
 import DetailOrderList from "./DetailOrderList";
@@ -66,18 +66,16 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [listOrder, setListOrder] = useState([]);
-  const [value, setValue] = useState("");
   const [isLoading, setLoading] = useState(true);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
-  const userId = localStorage.getItem("auth-id");
   const navigate = useNavigate();
 
   const handleOpen = (id) => {
     setId(id);
     setOpen(true);
   };
-  //function untuk tutup  pop up
+
   const handleClose = () => setOpen(false);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -119,7 +117,7 @@ const UnpaidOrder = ({ fetchData, action, ...props }) => {
 
   return (
     <div>
-      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum Dibayar</h2>
+      <h2 className="font-bold text-2xl m-6">Orderan Yang Belum di Bayar</h2>
 
       {isLoading ? (
         <div className="tableLoad">

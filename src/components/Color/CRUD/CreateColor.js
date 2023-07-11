@@ -44,29 +44,20 @@ export default function CreateColor({ handleClose, fetchItem, ...props }) {
     formData.append("status", state.status);
     setLoading(true);
     try {
-      axios
-        .post("/api/color", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.status === 200) {
-            swal({
-              title: "Success!",
-              text: res.data.message,
-              icon: "success",
-              button: false,
-              timer: 1500,
-            });
-            setError("");
-            fetchItem();
-            handleClose();
-          } else if (res.data.status === 403) {
-            setError(res.data.validation_errors);
-            setLoading(false);
-          }
-        });
+      axios.post("/api/color", formData).then((res) => {
+        if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+          setError("");
+          fetchItem();
+          handleClose();
+        }
+      });
     } catch (err) {
       alert(err.message);
     }

@@ -43,46 +43,41 @@ export default function CreateDetailProduct({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("color_id", state.color_id);
-    formData.append("qty", state.qty);
-    formData.append("original_price", state.original_price);
-    formData.append("price", state.price);
-    formData.append("status", state.status);
+    const formData = {
+      color_id: state.color_id,
+      qty: state.qty,
+      original_price: state.original_price,
+      price: state.price,
+      status: state.status,
+    };
     setLoading(true);
 
     try {
-      axios
-        .post(`/api/detail-products/${data}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.status === 200) {
-            swal({
-              title: "Success!",
-              text: res.data.message,
-              icon: "success",
-              button: false,
-              timer: 1500,
-            });
-            setError("");
-            handleClose();
-            fetchItem();
-            setState({
-              color_id: "",
-              weight: "",
-              qty: "",
-              original_price: "",
-              price: "",
-              status: "1",
-            });
-          } else if (res.data.status === 403) {
-            setError(res.data.validation_errors);
-            setLoading(false);
-          }
-        });
+      axios.post(`/api/detail-products/${data}`, formData).then((res) => {
+        if (res.data.status === 200) {
+          swal({
+            title: "Success!",
+            text: res.data.message,
+            icon: "success",
+            button: false,
+            timer: 1500,
+          });
+          setError("");
+          handleClose();
+          fetchItem();
+          setState({
+            color_id: "",
+            weight: "",
+            qty: "",
+            original_price: "",
+            price: "",
+            status: "1",
+          });
+        } else if (res.data.status === 403) {
+          setError(res.data.validation_errors);
+          setLoading(false);
+        }
+      });
     } catch (err) {
       alert(err.message);
     }
