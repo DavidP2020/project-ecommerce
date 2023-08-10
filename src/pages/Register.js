@@ -6,14 +6,13 @@ import Bg from "../assets/register.svg";
 export default function Register() {
   const [error, setError] = useState();
   const [name, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("abc");
   const [password, setPassword] = useState("");
   const [password_confirmation, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     try {
       // axios.get("/sanctum/csrf-cookie").then((response) => {
       axios

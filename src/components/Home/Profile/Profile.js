@@ -7,7 +7,8 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { get } from "react-scroll/modules/mixins/scroller";
 import swal from "sweetalert";
 
 export default function Profile({
@@ -29,8 +30,10 @@ export default function Profile({
     zip: data.zip,
     status: data.status,
   });
+
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [ongkir, setOngkir] = useState([]);
 
   const setGender = [
     {
@@ -42,28 +45,21 @@ export default function Profile({
       label: "Male",
     },
   ];
-  const setCity = [
-    {
-      value: "Tanjung Pinang",
-      label: "Tanjung Pinang",
-    },
-    {
-      value: "Kijang",
-      label: "Kijang",
-    },
-    {
-      value: "Kawal",
-      label: "Kawal",
-    },
-    {
-      value: "Uban",
-      label: "Uban",
-    },
-  ];
+
   const handleInputChange = (e) => {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
   };
+
+  useEffect(() => {
+    axios.get("/api/ongkir").then((resp) => {
+      console.log(resp.data);
+      if (resp.data.status === 200) {
+        setOngkir(resp.data.ongkir);
+      }
+    });
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = {
@@ -254,11 +250,12 @@ export default function Profile({
                 variant="outlined"
                 onChange={handleInputChange}
               >
-                {setCity.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
+                {ongkir &&
+                  ongkir.map((option) => (
+                    <MenuItem key={option.location} value={option.location}>
+                      {option.location}
+                    </MenuItem>
+                  ))}
               </TextField>
             </div>
             <div className="flexInput">

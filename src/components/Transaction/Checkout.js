@@ -40,25 +40,15 @@ export default function Checkout() {
   const [statusOrderan, setStatusOrderan] = useState("");
   const [ongkos, setOngkos] = useState("");
   const [ongkir, setOngkir] = useState(0);
-  const setCityData = [
-    {
-      value: "Tanjung Pinang",
-      label: "Tanjung Pinang",
-    },
-    {
-      value: "Kijang",
-      label: "Kijang",
-    },
-    {
-      value: "Kawal",
-      label: "Kawal",
-    },
-    {
-      value: "Uban",
-      label: "Uban",
-    },
-  ];
-
+  const [ongkosKirim, setOngkosKirim] = useState([]);
+  useEffect(() => {
+    axios.get("/api/ongkir").then((resp) => {
+      console.log(resp.data);
+      if (resp.data.status === 200) {
+        setOngkosKirim(resp.data.ongkir);
+      }
+    });
+  }, []);
   const fetchData = () => {
     try {
       axios.get(`/api/profile/${accessEmail}`).then((resp) => {
@@ -112,18 +102,16 @@ export default function Checkout() {
   const handleChange = (event) => {
     if (city) {
       setOngkos(event.target.checked);
-      if (city === "Tanjung Pinang") {
-        setOngkir(25000);
-      } else if (city === "Kijang") {
-        setOngkir(40000);
-      } else if (city === "Kawal") {
-        setOngkir(50000);
-      } else {
-        setOngkir(100000);
-      }
 
       if (ongkos === true) {
         setOngkir(0);
+      } else {
+        axios.get(`/api/ongkir/${city}`).then((resp) => {
+          if (resp.data.status === 200) {
+            console.log(resp.data);
+            setOngkir(resp.data.ongkir.fee);
+          }
+        });
       }
     } else {
       swal({
@@ -618,24 +606,17 @@ export default function Checkout() {
                       variant="outlined"
                       onChange={handleChangeCity}
                     >
-                      {setCityData.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
+                      {ongkosKirim &&
+                        ongkosKirim.map((option) => (
+                          <MenuItem
+                            key={option.location}
+                            value={option.location}
+                          >
+                            {option.location}
+                          </MenuItem>
+                        ))}
                     </TextField>
                   </div>
-                  {/* <div className="flexInput ml-4">
-                    <TextField
-                      helperText="Please enter your State"
-                      id="state"
-                      name="state"
-                      label="State"
-                      value={state}
-                      type="text"
-                      onChange={(e) => setState(e.target.value)}
-                    />
-                  </div> */}
                   <div className="flexInput ml-4">
                     <TextField
                       helperText="Please enter your Zip Code"

@@ -27,6 +27,7 @@ import BrandProduct from "./components/Brand/BrandProduct";
 import Wishlist from "./pages/Wishlist";
 import Laporan_Tahunan from "./components/Laporan/Laporan_Tahunan";
 import User from "./pages/User";
+import Ongkir from "./pages/Ongkir";
 
 function App() {
   const [isLogin, setLogin] = useState(false);
@@ -56,11 +57,9 @@ function App() {
       };
     }
   }, []);
-  console.log("abd");
   const refreshToken = async () => {
     try {
       const resp = await axios.get("api/refresh");
-      console.log("refresh token", resp.data);
       return resp.data;
     } catch (e) {
       console.log("Error", e);
@@ -82,7 +81,6 @@ function App() {
 
   axios.interceptors.response.use(
     (response) => {
-      console.log(response);
       return response;
     },
     async function (error) {
@@ -191,6 +189,7 @@ function App() {
               <Route path="/order" element={<Order />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/ongkir" element={<Ongkir />} />
               <Route path="/brand" element={<Brand />} />
               <Route path="/brands" element={<BrandPage />} />
               <Route path="/brands/:name" element={<BrandProduct />} />

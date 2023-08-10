@@ -6,6 +6,7 @@ export const adminPages = [
   { name: "Brand", link: "/brand" },
   { name: "Color", link: "/color" },
   { name: "Manage User", link: "/manage-user" },
+  { name: "Ongkir", link: "/ongkir" },
 ];
 
 export const userPages = [
